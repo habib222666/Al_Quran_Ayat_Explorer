@@ -472,3 +472,11 @@ body.dark-theme .footnote-details summary {
     font-size: 21px;
   }
 }
+
+
+/* Bengali text justification */
+.ayah-translation,
+.footnote-content {
+  text-align: justify;
+  text-justify: inter-word;
+}
