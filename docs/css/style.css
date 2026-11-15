@@ -1,0 +1,147 @@
+:root {
+  color-scheme: light;
+  --primary: #075c46;
+  --primary-light: #e8f4ef;
+  --background: #f5f8f6;
+  --surface: #ffffff;
+  --text: #18352c;
+  --muted: #687b73;
+  --border: #dce8e1;
+  --gold: #c49a3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans Bengali", "Noto Sans Arabic", sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.app-header {
+  min-height: 110px;
+  padding: 20px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--primary);
+  color: #ffffff;
+  border-bottom: 3px solid var(--gold);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.brand p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #e2eee9;
+}
+
+#themeToggle {
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 9px;
+  background: transparent;
+  color: #ffffff;
+}
+
+#themeToggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+#mainContent {
+  width: min(1100px, 90%);
+  margin: 35px auto;
+}
+
+.welcome-section,
+#quranSection {
+  padding: 28px;
+  margin-bottom: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(20, 60, 45, 0.04);
+}
+
+.welcome-section {
+  text-align: center;
+  background: var(--primary-light);
+}
+
+.welcome-section h2 {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 30px;
+}
+
+.welcome-section p,
+#quranSection p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+#quranSection h2 {
+  margin-top: 0;
+  color: var(--primary);
+}
+
+.app-footer {
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+body.dark-theme {
+  color-scheme: dark;
+  --primary: #101d18;
+  --primary-light: #172720;
+  --background: #0c110e;
+  --surface: #151d18;
+  --text: #edf5ef;
+  --muted: #a8b9ae;
+  --border: #2c3b32;
+  --gold: #d2ad58;
+}
+
+body.dark-theme .welcome-section h2,
+body.dark-theme #quranSection h2 {
+  color: #e5c36c;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    padding: 18px 5%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .brand h1 {
+    font-size: 21px;
+  }
+
+  #mainContent {
+    width: 92%;
+    margin: 22px auto;
+  }
+
+  .welcome-section,
+  #quranSection {
+    padding: 20px;
+  }
+}
