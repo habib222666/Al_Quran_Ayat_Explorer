@@ -311,6 +311,15 @@ body.dark-theme #quranSection h2 {
   color: var(--muted);
 }
 
+.surah-header .surah-bismillah {
+  margin-top: 16px;
+  color: var(--text);
+  font-family: "Noto Naskh Arabic", "Amiri", serif;
+  font-size: 29px;
+  line-height: 2;
+  direction: rtl;
+}
+
 .ayah-list {
   display: grid;
   gap: 16px;

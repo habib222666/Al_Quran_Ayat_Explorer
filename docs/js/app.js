@@ -190,6 +190,17 @@ function createAyahCard(ayah) {
   return article;
 }
 
+function removeBismillahPrefix(arabic) {
+  const words = arabic.trim().split(/\s+/);
+  const normalized = words.slice(0, 4).join(" ").replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, "");
+
+  if (normalized !== "بسم الله الرحمن الرحيم") {
+    throw new Error("প্রথম আয়াত থেকে বিসমিল্লাহ আলাদা করা যায়নি।");
+  }
+
+  return words.slice(4).join(" ");
+}
+
 async function openSurah(surahNumber) {
   const surah = surahs.find((item) => item.surah === surahNumber);
   if (!surah) {
@@ -233,13 +244,53 @@ async function openSurah(surahNumber) {
     const heading = document.createElement("h2");
     heading.textContent = `সূরা ${surahNumber.toLocaleString("bn-BD")} — ${surah.name_bn}`;
 
-    const count = document.createElement("p");
-    count.textContent = `${data.ayahs.length.toLocaleString("bn-BD")} আয়াত`;
+    let displayAyahs = data.ayahs.map((ayah) => ({ ...ayah }));
 
-    surahHeader.replaceChildren(heading, count);
+    let fatihaIntro = null;
+
+    if (surahNumber === 1) {
+      fatihaIntro = displayAyahs.shift();
+      displayAyahs = displayAyahs.map((ayah, index) => ({
+        ...ayah,
+        aya: index + 1
+      }));
+    } else if (surahNumber !== 9) {
+      displayAyahs[0].arabic = removeBismillahPrefix(displayAyahs[0].arabic);
+    }
+
+    const count = document.createElement("p");
+    count.textContent = `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
+
+    const headerItems = [heading, count];
+
+    if (surahNumber !== 9) {
+      const bismillah = document.createElement("p");
+      bismillah.className = "surah-bismillah";
+      bismillah.lang = "ar";
+      bismillah.dir = "rtl";
+      bismillah.textContent = "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ";
+      headerItems.push(bismillah);
+    }
+
+    if (fatihaIntro && fatihaIntro.footnotes && fatihaIntro.footnotes.trim()) {
+      const details = document.createElement("details");
+      details.className = "footnote-details surah-intro-details";
+
+      const summary = document.createElement("summary");
+      summary.textContent = "সূরা পরিচিতি ও ব্যাখ্যা দেখুন";
+
+      const content = document.createElement("div");
+      content.className = "footnote-content";
+      content.appendChild(sanitizeFootnotes(fatihaIntro.footnotes));
+
+      details.append(summary, content);
+      headerItems.push(details);
+    }
+
+    surahHeader.replaceChildren(...headerItems);
 
     const fragment = document.createDocumentFragment();
-    data.ayahs.forEach((ayah) => fragment.appendChild(createAyahCard(ayah)));
+    displayAyahs.forEach((ayah) => fragment.appendChild(createAyahCard(ayah)));
     ayahList.replaceChildren(fragment);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
