@@ -4,20 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#075c46">
-  <meta name="description" content="আল কুরআনের আয়াত অনুসন্ধান ও বিষয়ভিত্তিক অধ্যয়ন">
+  <meta name="description" content="আল কুরআনের ১১৪টি সূরা, আরবি আয়াত, বাংলা অনুবাদ ও ফুটনোট">
   <title>আল-কুরআন ও আয়াত অনুসন্ধান</title>
-
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
   <div id="app">
     <header class="app-header">
       <div class="brand">
         <h1>আল-কুরআন ও আয়াত অনুসন্ধান</h1>
-        <p>আল কুরআনের আয়াত অনুসন্ধান ও বিষয়ভিত্তিক অধ্যয়ন</p>
+        <p>পবিত্র কুরআন পড়ুন, অনুসন্ধান করুন এবং অধ্যয়ন করুন</p>
       </div>
-
       <button id="themeToggle" type="button" aria-label="থিম পরিবর্তন">
         Dark Mode
       </button>
@@ -25,13 +22,51 @@
 
     <main id="mainContent">
       <section class="welcome-section">
-        <h2>আল কুরআন</h2>
-        <p>পবিত্র কুরআন পড়ুন, অনুসন্ধান করুন এবং অধ্যয়ন করুন।</p>
+        <h2>الْقُرْآنُ الْكَرِيمُ</h2>
+        <p>পবিত্র আল-কুরআনের ১১৪টি সূরা ও ৬,২৩৬টি আয়াত</p>
       </section>
 
       <section id="quranSection">
-        <h2>কুরআন অনুসন্ধান</h2>
-        <p>শীঘ্রই এখানে সূরা, আয়াত ও বিষয়ভিত্তিক অনুসন্ধান যুক্ত হবে।</p>
+        <div id="surahBrowser">
+          <div class="section-heading">
+            <div>
+              <h2>সূরা তালিকা</h2>
+              <p>পড়ার জন্য একটি সূরা নির্বাচন করুন</p>
+            </div>
+            <span id="surahCount" class="count-badge">লোড হচ্ছে...</span>
+          </div>
+
+          <label class="search-label" for="surahSearch">সূরার নাম বা নম্বর দিয়ে খুঁজুন</label>
+          <input
+            id="surahSearch"
+            class="surah-search"
+            type="search"
+            placeholder="যেমন: আল-বাকারা অথবা ২"
+            autocomplete="off"
+          >
+
+          <div id="surahList" class="surah-grid" aria-live="polite">
+            <p class="loading-message">সূরার তালিকা লোড হচ্ছে...</p>
+          </div>
+        </div>
+
+        <section id="surahReader" hidden>
+          <div class="reader-toolbar">
+            <button id="backToSurahs" class="secondary-button" type="button">← সূরা তালিকা</button>
+            <div class="surah-navigation">
+              <button id="previousSurah" class="secondary-button" type="button">← আগের সূরা</button>
+              <button id="nextSurah" class="secondary-button" type="button">পরের সূরা →</button>
+            </div>
+          </div>
+
+          <div id="surahHeader" class="surah-header">
+            <p class="loading-message">সূরা লোড হচ্ছে...</p>
+          </div>
+
+          <div id="ayahList" class="ayah-list" aria-live="polite"></div>
+        </section>
+
+        <p id="appMessage" class="app-message" role="status" aria-live="polite"></p>
       </section>
     </main>
 
@@ -40,7 +75,6 @@
       <p><a href="sources.html">তথ্যসূত্র ও কৃতজ্ঞতা</a></p>
     </footer>
   </div>
-
   <script src="js/app.js"></script>
 </body>
 </html>
