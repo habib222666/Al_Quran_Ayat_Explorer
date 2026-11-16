@@ -1,5 +1,12 @@
 "use strict";
 
+const SUPABASE_URL = "https://fgeubvabnjvbirikuuqz.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_s2AKhaEdG2wG-_wnkx6QAA_xjReFini";
+
+const supabaseClient = window.supabase?.createClient
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+  : null;
+
 const themeToggle = document.getElementById("themeToggle");
 const savedTheme = localStorage.getItem("quran-explorer-theme");
 
@@ -32,8 +39,21 @@ const backToSurahs = document.getElementById("backToSurahs");
 const previousSurah = document.getElementById("previousSurah");
 const nextSurah = document.getElementById("nextSurah");
 
+const adminStatus = document.getElementById("adminStatus");
+const adminLoginToggle = document.getElementById("adminLoginToggle");
+const adminLogout = document.getElementById("adminLogout");
+const adminLoginPanel = document.getElementById("adminLoginPanel");
+const adminEmail = document.getElementById("adminEmail");
+const adminPassword = document.getElementById("adminPassword");
+const adminLoginSubmit = document.getElementById("adminLoginSubmit");
+const adminLoginCancel = document.getElementById("adminLoginCancel");
+const adminLoginMessage = document.getElementById("adminLoginMessage");
+
 let surahs = [];
 let currentSurahNumber = null;
+let isQuranAdmin = false;
+let isSurahEditing = false;
+let currentSurahData = null;
 
 function showMessage(message, isError = false) {
   appMessage.textContent = message;
@@ -95,16 +115,59 @@ function renderSurahList(query = "") {
 async function loadSurahList() {
   try {
     const response = await fetch("data/surah-list.json");
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
 
     const data = await response.json();
+
     if (!Array.isArray(data.surahs) || data.surahs.length !== 114) {
       throw new Error("সূরার তালিকা সঠিক নয়।");
     }
 
     surahs = data.surahs;
+
+    if (supabaseClient) {
+      try {
+        const { data: nameRows, error } = await supabaseClient
+          .from("quran_surah_names_bn")
+          .select("surah_no,name_bn")
+          .eq("is_published", true)
+          .order("surah_no", { ascending: true });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!Array.isArray(nameRows) || nameRows.length !== 114) {
+          throw new Error("Supabase থেকে সম্পূর্ণ ১১৪টি প্রকাশিত সূরার নাম পাওয়া যায়নি।");
+        }
+
+        const nameMap = new Map(
+          nameRows.map((row) => [Number(row.surah_no), row.name_bn])
+        );
+
+        if (!surahs.every((surah) => nameMap.has(surah.surah))) {
+          throw new Error("Supabase সূরার নামের তালিকা অসম্পূর্ণ।");
+        }
+
+        surahs = surahs.map((surah) => ({
+          ...surah,
+          name_bn: nameMap.get(surah.surah)
+        }));
+
+        console.info("Supabase থেকে ১১৪টি সূরার নাম লোড হয়েছে।");
+      } catch (supabaseError) {
+        console.warn(
+          "Supabase name loading failed; local names are being used:",
+          supabaseError
+        );
+      }
+    } else {
+      console.warn("Supabase library unavailable; local names are being used.");
+    }
+
     surahCount.textContent = `${surahs.length.toLocaleString("bn-BD")}টি সূরা`;
     renderSurahList();
   } catch (error) {
@@ -113,7 +176,6 @@ async function loadSurahList() {
     showMessage("সূরার তালিকা লোড করতে সমস্যা হয়েছে।", true);
   }
 }
-
 function sanitizeFootnotes(html) {
   const parser = new DOMParser();
   const parsed = parser.parseFromString(String(html || ""), "text/html");
@@ -144,9 +206,28 @@ function sanitizeFootnotes(html) {
   return result;
 }
 
+function createEditField(labelText, value, sourceAya, fieldName, extraClass = "") {
+  const wrapper = document.createElement("div");
+  wrapper.className = "ayah-edit-field";
+
+  const label = document.createElement("label");
+  label.textContent = labelText;
+
+  const input = document.createElement("textarea");
+  input.className = `ayah-edit-input ${extraClass}`.trim();
+  input.value = value || "";
+  input.dataset.sourceAya = String(sourceAya);
+  input.dataset.field = fieldName;
+  input.dataset.original = value || "";
+
+  wrapper.append(label, input);
+  return wrapper;
+}
+
 function createAyahCard(ayah) {
   const article = document.createElement("article");
   article.className = "ayah-card";
+  article.dataset.sourceAya = String(ayah._sourceAya);
 
   const top = document.createElement("div");
   top.className = "ayah-top";
@@ -166,22 +247,43 @@ function createAyahCard(ayah) {
   translationLabel.className = "translation-label";
   translationLabel.textContent = "বাংলা অনুবাদ";
 
-  const translation = document.createElement("p");
-  translation.className = "ayah-translation";
-  translation.textContent = ayah.translation;
+  article.append(top, arabic, translationLabel);
 
-  article.append(top, arabic, translationLabel, translation);
+  if (isSurahEditing) {
+    article.appendChild(
+      createEditField("বাংলা অনুবাদ", ayah.translation, ayah._sourceAya, "translation")
+    );
+  } else {
+    const translation = document.createElement("p");
+    translation.className = "ayah-translation";
+    translation.textContent = ayah.translation;
+    article.appendChild(translation);
+  }
 
-  if (ayah.footnotes && ayah.footnotes.trim()) {
+  if ((ayah.footnotes && ayah.footnotes.trim()) || isSurahEditing) {
     const details = document.createElement("details");
     details.className = "footnote-details";
+    details.open = isSurahEditing;
 
     const summary = document.createElement("summary");
     summary.textContent = "ব্যাখ্যা ও ফুটনোট দেখুন";
 
     const content = document.createElement("div");
     content.className = "footnote-content";
-    content.appendChild(sanitizeFootnotes(ayah.footnotes));
+
+    if (isSurahEditing) {
+      content.appendChild(
+        createEditField(
+          "Footnotes (HTML সমর্থিত)",
+          ayah.footnotes,
+          ayah._sourceAya,
+          "footnotes",
+          "ayah-edit-footnotes"
+        )
+      );
+    } else {
+      content.appendChild(sanitizeFootnotes(ayah.footnotes));
+    }
 
     details.append(summary, content);
     article.appendChild(details);
@@ -201,6 +303,145 @@ function removeBismillahPrefix(arabic) {
   return words.slice(4).join(" ");
 }
 
+function createSurahEditToolbar() {
+  const toolbar = document.createElement("div");
+  toolbar.className = "surah-edit-toolbar";
+
+  if (!isQuranAdmin) return toolbar;
+
+  const editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.className = "surah-edit-button";
+  editButton.textContent = isSurahEditing ? "সম্পাদনা চালু আছে" : "Edit";
+
+  editButton.addEventListener("click", () => {
+    if (!isSurahEditing) {
+      isSurahEditing = true;
+      renderCurrentSurah();
+    }
+  });
+
+  toolbar.appendChild(editButton);
+
+  if (isSurahEditing) {
+    const saveButton = document.createElement("button");
+    saveButton.type = "button";
+    saveButton.className = "surah-save-button";
+    saveButton.textContent = "Save & Publish";
+    saveButton.addEventListener("click", saveCurrentSurah);
+    toolbar.appendChild(saveButton);
+
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.className = "surah-cancel-button";
+    cancelButton.textContent = "Cancel";
+    cancelButton.addEventListener("click", () => {
+      isSurahEditing = false;
+      renderCurrentSurah();
+      showMessage("সম্পাদনা বাতিল করা হয়েছে।");
+    });
+    toolbar.appendChild(cancelButton);
+  }
+
+  return toolbar;
+}
+
+function renderCurrentSurah() {
+  if (!currentSurahData || currentSurahNumber === null) return;
+
+  const surah = surahs.find((item) => item.surah === currentSurahNumber);
+  if (!surah) return;
+
+  const heading = document.createElement("h2");
+  heading.textContent = `সূরা ${currentSurahNumber.toLocaleString("bn-BD")} — ${surah.name_bn}`;
+
+  let displayAyahs = currentSurahData.ayahs.map((ayah) => ({ ...ayah }));
+  let fatihaIntro = null;
+
+  if (currentSurahNumber === 1) {
+    fatihaIntro = displayAyahs.shift();
+    displayAyahs = displayAyahs.map((ayah, index) => ({
+      ...ayah,
+      aya: index + 1
+    }));
+  } else if (currentSurahNumber !== 9) {
+    displayAyahs[0].arabic = removeBismillahPrefix(displayAyahs[0].arabic);
+  }
+
+  const count = document.createElement("p");
+  count.textContent = `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
+
+  const headerItems = isQuranAdmin
+    ? [createSurahEditToolbar(), heading, count]
+    : [heading, count];
+
+  if (currentSurahNumber !== 9) {
+    const bismillah = document.createElement("p");
+    bismillah.className = "surah-bismillah";
+    bismillah.lang = "ar";
+    bismillah.dir = "rtl";
+    bismillah.textContent = "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ";
+    headerItems.push(bismillah);
+  }
+
+  if (fatihaIntro) {
+    if (isSurahEditing) {
+      headerItems.push(
+        createEditField(
+          "প্রথম আয়াতের বাংলা অনুবাদ",
+          fatihaIntro.translation,
+          fatihaIntro._sourceAya,
+          "translation"
+        )
+      );
+    } else {
+      const introTranslationLabel = document.createElement("h3");
+      introTranslationLabel.className = "translation-label";
+      introTranslationLabel.textContent = "প্রথম আয়াতের বাংলা অনুবাদ";
+
+      const introTranslation = document.createElement("p");
+      introTranslation.className = "ayah-translation";
+      introTranslation.textContent = fatihaIntro.translation;
+
+      headerItems.push(introTranslationLabel, introTranslation);
+    }
+
+    if ((fatihaIntro.footnotes && fatihaIntro.footnotes.trim()) || isSurahEditing) {
+      const details = document.createElement("details");
+      details.className = "footnote-details surah-intro-details";
+      details.open = isSurahEditing;
+
+      const summary = document.createElement("summary");
+      summary.textContent = "সূরা পরিচিতি ও ব্যাখ্যা দেখুন";
+
+      const content = document.createElement("div");
+      content.className = "footnote-content";
+
+      if (isSurahEditing) {
+        content.appendChild(
+          createEditField(
+            "প্রথম আয়াতের Footnotes (HTML সমর্থিত)",
+            fatihaIntro.footnotes,
+            fatihaIntro._sourceAya,
+            "footnotes",
+            "ayah-edit-footnotes"
+          )
+        );
+      } else {
+        content.appendChild(sanitizeFootnotes(fatihaIntro.footnotes));
+      }
+
+      details.append(summary, content);
+      headerItems.push(details);
+    }
+  }
+  surahHeader.replaceChildren(...headerItems);
+
+  const fragment = document.createDocumentFragment();
+  displayAyahs.forEach((ayah) => fragment.appendChild(createAyahCard(ayah)));
+  ayahList.replaceChildren(fragment);
+}
+
 async function openSurah(surahNumber) {
   const surah = surahs.find((item) => item.surah === surahNumber);
   if (!surah) {
@@ -209,6 +450,8 @@ async function openSurah(surahNumber) {
   }
 
   currentSurahNumber = surahNumber;
+  isSurahEditing = false;
+  currentSurahData = null;
   surahBrowser.hidden = true;
   surahReader.hidden = false;
   surahHeader.replaceChildren();
@@ -241,58 +484,42 @@ async function openSurah(surahNumber) {
       throw new Error("সূরার ডেটা যাচাই করা যায়নি।");
     }
 
-    const heading = document.createElement("h2");
-    heading.textContent = `সূরা ${surahNumber.toLocaleString("bn-BD")} — ${surah.name_bn}`;
-
-    let displayAyahs = data.ayahs.map((ayah) => ({ ...ayah }));
-
-    let fatihaIntro = null;
-
-    if (surahNumber === 1) {
-      fatihaIntro = displayAyahs.shift();
-      displayAyahs = displayAyahs.map((ayah, index) => ({
+    currentSurahData = {
+      metadata: data.metadata,
+      ayahs: data.ayahs.map((ayah) => ({
         ...ayah,
-        aya: index + 1
-      }));
-    } else if (surahNumber !== 9) {
-      displayAyahs[0].arabic = removeBismillahPrefix(displayAyahs[0].arabic);
+        _sourceAya: Number(ayah.aya)
+      }))
+    };
+
+    if (supabaseClient) {
+      try {
+        const { data: corrections, error } = await supabaseClient
+          .from("quran_bn_corrections_public")
+          .select("surah_no,ayah_no,field_name,proposed_text")
+          .eq("surah_no", surahNumber);
+
+        if (error) throw error;
+
+        for (const correction of (corrections || [])) {
+          const target = currentSurahData.ayahs.find(
+            (ayah) => Number(ayah._sourceAya) === Number(correction.ayah_no)
+          );
+
+          if (
+            target &&
+            ["translation", "footnotes"].includes(correction.field_name)
+          ) {
+            target[correction.field_name] = correction.proposed_text;
+          }
+        }
+      } catch (correctionError) {
+        console.warn("Approved corrections could not be loaded:", correctionError);
+        showMessage("অনলাইন সংশোধন লোড করা যায়নি; স্থানীয় অনুবাদ দেখানো হচ্ছে।", true);
+      }
     }
 
-    const count = document.createElement("p");
-    count.textContent = `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
-
-    const headerItems = [heading, count];
-
-    if (surahNumber !== 9) {
-      const bismillah = document.createElement("p");
-      bismillah.className = "surah-bismillah";
-      bismillah.lang = "ar";
-      bismillah.dir = "rtl";
-      bismillah.textContent = "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ";
-      headerItems.push(bismillah);
-    }
-
-    if (fatihaIntro && fatihaIntro.footnotes && fatihaIntro.footnotes.trim()) {
-      const details = document.createElement("details");
-      details.className = "footnote-details surah-intro-details";
-
-      const summary = document.createElement("summary");
-      summary.textContent = "সূরা পরিচিতি ও ব্যাখ্যা দেখুন";
-
-      const content = document.createElement("div");
-      content.className = "footnote-content";
-      content.appendChild(sanitizeFootnotes(fatihaIntro.footnotes));
-
-      details.append(summary, content);
-      headerItems.push(details);
-    }
-
-    surahHeader.replaceChildren(...headerItems);
-
-    const fragment = document.createDocumentFragment();
-    displayAyahs.forEach((ayah) => fragment.appendChild(createAyahCard(ayah)));
-    ayahList.replaceChildren(fragment);
-
+    renderCurrentSurah();
     window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (error) {
     console.error(`Surah ${surahNumber} loading failed:`, error);
@@ -301,10 +528,97 @@ async function openSurah(surahNumber) {
   }
 }
 
+async function saveCurrentSurah() {
+  if (!isQuranAdmin || !currentSurahData || !isSurahEditing || !supabaseClient) {
+    showMessage("Admin অনুমতি ছাড়া Save করা যাবে না।", true);
+    return;
+  }
+
+  const fields = [
+    ...surahHeader.querySelectorAll("textarea[data-field]"),
+    ...ayahList.querySelectorAll("textarea[data-field]")
+  ];
+
+  const changes = fields.filter(
+    (field) => field.value !== field.dataset.original
+  );
+
+  if (changes.length === 0) {
+    showMessage("কোনো পরিবর্তন পাওয়া যায়নি।");
+    return;
+  }
+
+  for (const field of changes) {
+    if (!field.value.trim()) {
+      showMessage("অনুবাদ বা Footnotes খালি রাখা যাবে না।", true);
+      field.focus();
+      return;
+    }
+  }
+
+  const saveButton = surahHeader.querySelector(".surah-save-button");
+  if (saveButton) {
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+  }
+
+  let savedCount = 0;
+
+  for (const field of changes) {
+    const sourceAya = Number(field.dataset.sourceAya);
+    const fieldName = field.dataset.field;
+    const newText = field.value;
+    const target = currentSurahData.ayahs.find(
+      (ayah) => Number(ayah._sourceAya) === sourceAya
+    );
+
+    if (!target || !["translation", "footnotes"].includes(fieldName)) {
+      showMessage("একটি আয়াতের তথ্য যাচাই করা যায়নি।", true);
+      break;
+    }
+
+    try {
+      const { error } = await supabaseClient.rpc(
+        "publish_quran_bn_correction",
+        {
+          p_surah_no: currentSurahNumber,
+          p_ayah_no: sourceAya,
+          p_field_name: fieldName,
+          p_new_text: newText,
+          p_reason: null
+        }
+      );
+
+      if (error) throw error;
+
+      target[fieldName] = newText;
+      field.dataset.original = newText;
+      savedCount += 1;
+    } catch (error) {
+      console.error("Correction publish failed:", error);
+      showMessage(
+        `${savedCount}টি পরিবর্তন Publish হয়েছে। পরবর্তী পরিবর্তনে সমস্যা: ${error.message || "অজানা ত্রুটি"}। বাকি পরিবর্তনগুলো Edit Mode-এ রাখা হয়েছে।`,
+        true
+      );
+      if (saveButton) {
+        saveButton.disabled = false;
+        saveButton.textContent = "আবার Save করুন";
+      }
+      return;
+    }
+  }
+
+  isSurahEditing = false;
+  renderCurrentSurah();
+  showMessage(`${savedCount.toLocaleString("bn-BD")}টি পরিবর্তন Supabase-এ Publish হয়েছে এবং History-তে সংরক্ষিত হয়েছে।`);
+}
+
 function showSurahList() {
   surahReader.hidden = true;
   surahBrowser.hidden = false;
   currentSurahNumber = null;
+  currentSurahData = null;
+  isSurahEditing = false;
   showMessage("");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -327,4 +641,123 @@ nextSurah.addEventListener("click", () => {
   }
 });
 
+async function verifyQuranAdmin(user) {
+  if (!supabaseClient || !user) return false;
+
+  const { data, error } = await supabaseClient
+    .from("quran_admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Quran admin verification failed:", error);
+    return false;
+  }
+
+  return Boolean(data);
+}
+
+function updateAdminUI() {
+  adminStatus.hidden = !isQuranAdmin;
+  adminLoginToggle.hidden = isQuranAdmin;
+  adminLogout.hidden = !isQuranAdmin;
+  adminLoginPanel.hidden = true;
+
+  if (currentSurahData) {
+    isSurahEditing = false;
+    renderCurrentSurah();
+  }
+}
+
+adminLoginToggle.addEventListener("click", () => {
+  adminLoginPanel.hidden = !adminLoginPanel.hidden;
+  adminLoginMessage.textContent = "";
+  if (!adminLoginPanel.hidden) adminEmail.focus();
+});
+
+adminLoginCancel.addEventListener("click", () => {
+  adminLoginPanel.hidden = true;
+  adminPassword.value = "";
+  adminLoginMessage.textContent = "";
+});
+
+adminLoginPanel.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!supabaseClient) {
+    adminLoginMessage.textContent = "Supabase সংযোগ পাওয়া যায়নি।";
+    return;
+  }
+
+  adminLoginSubmit.disabled = true;
+  adminLoginMessage.textContent = "Login যাচাই হচ্ছে...";
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: adminEmail.value.trim(),
+      password: adminPassword.value
+    });
+
+    if (error) throw error;
+
+    const allowed = await verifyQuranAdmin(data.user);
+
+    if (!allowed) {
+      await supabaseClient.auth.signOut();
+      throw new Error("এই Account-এর Quran Admin অনুমতি নেই।");
+    }
+
+    isQuranAdmin = true;
+    adminPassword.value = "";
+    adminLoginMessage.textContent = "";
+    updateAdminUI();
+    showMessage("Admin Login সফল হয়েছে।");
+  } catch (error) {
+    console.error("Admin login failed:", error);
+    adminLoginMessage.textContent = error.message || "Login ব্যর্থ হয়েছে।";
+  } finally {
+    adminLoginSubmit.disabled = false;
+  }
+});
+
+adminLogout.addEventListener("click", async () => {
+  if (supabaseClient) {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
+      showMessage("Logout করা যায়নি: " + error.message, true);
+      return;
+    }
+  }
+
+  isQuranAdmin = false;
+  isSurahEditing = false;
+  updateAdminUI();
+  showMessage("Admin Logout সম্পন্ন হয়েছে।");
+});
+
+async function restoreAdminSession() {
+  if (!supabaseClient) {
+    adminLoginToggle.disabled = true;
+    adminLoginToggle.textContent = "Login unavailable";
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) throw error;
+
+    if (data.session && await verifyQuranAdmin(data.session.user)) {
+      isQuranAdmin = true;
+      updateAdminUI();
+    } else if (data.session) {
+      await supabaseClient.auth.signOut();
+    }
+  } catch (error) {
+    console.warn("Admin session restore failed:", error);
+  }
+}
+
+updateAdminUI();
+restoreAdminSession();
 loadSurahList();

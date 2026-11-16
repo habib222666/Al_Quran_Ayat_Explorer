@@ -489,3 +489,178 @@ body.dark-theme .footnote-details summary {
   text-align: justify;
   text-justify: inter-word;
 }
+
+/* Reader Admin Login and Editing */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-button {
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 9px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.header-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.admin-status {
+  color: #f1d58a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-login-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 12px);
+  right: 0;
+  width: min(310px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  text-align: left;
+}
+
+.admin-login-panel label {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-login-panel input,
+.ayah-edit-input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--text);
+  font: inherit;
+}
+
+.admin-login-panel .header-button {
+  margin-top: 12px;
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #ffffff;
+}
+
+#adminLoginMessage {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.surah-edit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.surah-edit-button,
+.surah-save-button,
+.surah-cancel-button {
+  padding: 9px 18px;
+  border: 1px solid var(--primary);
+  border-radius: 9px;
+  background: var(--primary);
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+}
+
+.surah-cancel-button {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.surah-save-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.ayah-edit-field {
+  display: block;
+  margin: 14px 0;
+}
+
+.ayah-edit-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.ayah-edit-input {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.ayah-edit-footnotes {
+  min-height: 130px;
+  direction: ltr;
+  text-align: left;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+body.dark-theme .admin-login-panel {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+body.dark-theme .admin-login-panel input,
+body.dark-theme .ayah-edit-input {
+  border-color: var(--border);
+  background: #101713;
+  color: var(--text);
+}
+
+body.dark-theme .ayah-edit-field label {
+  color: #e5c36c;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-login-panel {
+    right: auto;
+    left: 0;
+  }
+}

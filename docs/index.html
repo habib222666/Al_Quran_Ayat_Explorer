@@ -15,9 +15,25 @@
         <h1>আল-কুরআন ও আয়াত অনুসন্ধান</h1>
         <p>পবিত্র কুরআন পড়ুন, অনুসন্ধান করুন এবং অধ্যয়ন করুন</p>
       </div>
-      <button id="themeToggle" type="button" aria-label="থিম পরিবর্তন">
-        Dark Mode
-      </button>
+      <div class="header-actions">
+        <div class="admin-controls">
+          <span id="adminStatus" class="admin-status" hidden>Admin</span>
+          <button id="adminLoginToggle" class="header-button" type="button">Admin Login</button>
+          <button id="adminLogout" class="header-button" type="button" hidden>Logout</button>
+          <form id="adminLoginPanel" class="admin-login-panel" hidden>
+            <label for="adminEmail">Admin Email</label>
+            <input id="adminEmail" type="email" autocomplete="username" required>
+            <label for="adminPassword">Password</label>
+            <input id="adminPassword" type="password" autocomplete="current-password" required>
+            <button id="adminLoginSubmit" class="header-button" type="submit">Login</button>
+            <button id="adminLoginCancel" class="header-button" type="button">Cancel</button>
+            <p id="adminLoginMessage" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <button id="themeToggle" type="button" aria-label="থিম পরিবর্তন">
+          Dark Mode
+        </button>
+      </div>
     </header>
 
     <main id="mainContent">
@@ -75,6 +91,7 @@
       <p><a href="sources.html">তথ্যসূত্র ও কৃতজ্ঞতা</a></p>
     </footer>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
