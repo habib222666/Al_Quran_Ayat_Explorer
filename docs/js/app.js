@@ -114,10 +114,13 @@ function renderSurahList(query = "") {
 
 async function loadSurahList() {
   try {
-    const response = await fetch("data/surah-list.json");
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    let data;
+    if (window.location.protocol === "file:") {
+      data = window.QuranOfflineData?.surahList;
+    } else {
+      const response = await fetch("data/surah-list.json");
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      data = await response.json();
     }
 
     const data = await response.json();
@@ -467,11 +470,26 @@ async function openSurah(surahNumber) {
   showMessage("");
 
   try {
-    const filename = `surah-${String(surahNumber).padStart(3, "0")}.json`;
-    const response = await fetch(`data/surahs/${filename}`);
+    let data;
+    if (window.location.protocol === "file:") {
+      const numberKey = String(surahNumber).padStart(3, "0");
+      data = window.QuranOfflineData?.surahs?.[numberKey];
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      if (!data) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = `data/offline/surahs/surah-${numberKey}.js`;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error(`Offline সূরা ${surahNumber} লোড করা যায়নি।`));
+          document.head.appendChild(script);
+        });
+        data = window.QuranOfflineData?.surahs?.[numberKey];
+      }
+    } else {
+      const filename = `surah-${String(surahNumber).padStart(3, "0")}.json`;
+      const response = await fetch(`data/surahs/${filename}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      data = await response.json();
     }
 
     const data = await response.json();
