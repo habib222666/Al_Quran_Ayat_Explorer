@@ -31,6 +31,8 @@ const surahReader = document.getElementById("surahReader");
 const surahListElement = document.getElementById("surahList");
 const surahSearch = document.getElementById("surahSearch");
 const surahCount = document.getElementById("surahCount");
+const makkiCount = document.getElementById("makkiCount");
+const madaniCount = document.getElementById("madaniCount");
 const surahHeader = document.getElementById("surahHeader");
 const ayahList = document.getElementById("ayahList");
 const appMessage = document.getElementById("appMessage");
@@ -50,6 +52,7 @@ const adminLoginCancel = document.getElementById("adminLoginCancel");
 const adminLoginMessage = document.getElementById("adminLoginMessage");
 
 let surahs = [];
+let currentRevelationFilter = "all";
 let currentSurahNumber = null;
 let isQuranAdmin = false;
 let isSurahEditing = false;
@@ -60,41 +63,81 @@ function showMessage(message, isError = false) {
   appMessage.classList.toggle("error-message", isError);
 }
 
-function createSurahCard(surah) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "surah-card";
-  button.setAttribute("aria-label", `সূরা ${surah.surah}: ${surah.name_bn}, ${surah.total_ayahs} আয়াত`);
 
-  const number = document.createElement("span");
-  number.className = "surah-number";
-  number.textContent = surah.surah.toLocaleString("bn-BD");
+function createSurahTable(items) {
+  const table = document.createElement("table");
+  table.className = "surah-index-table";
 
-  const details = document.createElement("span");
-  details.className = "surah-card-details";
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
 
-  const name = document.createElement("strong");
-  name.className = "surah-card-name";
-  name.textContent = surah.name_bn;
+  ["সূরা নং", "সূরার নাম", "আয়াত সংখ্যা", "অবতীর্ণ"].forEach((label) => {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.textContent = label;
+    headerRow.appendChild(th);
+  });
 
-  const ayahs = document.createElement("small");
-  ayahs.textContent = `${surah.total_ayahs.toLocaleString("bn-BD")} আয়াত`;
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
 
-  details.append(name, ayahs);
-  button.append(number, details);
+  const tbody = document.createElement("tbody");
 
-  button.addEventListener("click", () => openSurah(surah.surah));
-  return button;
+  if (items.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.textContent = "কোনো সূরা পাওয়া যায়নি";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+  } else {
+    items.forEach((surah) => {
+      const row = document.createElement("tr");
+      row.className = surah.revelation_bn === "মাক্কী" ? "surah-row-makki" : "surah-row-madani";
+
+      const numberCell = document.createElement("td");
+      numberCell.textContent = surah.surah.toLocaleString("bn-BD");
+
+      const nameCell = document.createElement("td");
+      nameCell.className = "surah-name-cell";
+
+      const nameButton = document.createElement("button");
+      nameButton.type = "button";
+      nameButton.className = "surah-table-link";
+      nameButton.textContent = surah.name_bn;
+      nameButton.setAttribute("aria-label", `সূরা ${surah.surah}: ${surah.name_bn} খুলুন`);
+      nameButton.addEventListener("click", () => openSurah(surah.surah));
+      nameCell.appendChild(nameButton);
+
+      const ayahCell = document.createElement("td");
+      ayahCell.textContent = surah.total_ayahs.toLocaleString("bn-BD");
+
+      const revelationCell = document.createElement("td");
+      revelationCell.textContent = surah.revelation_bn || "—";
+
+      row.append(numberCell, nameCell, ayahCell, revelationCell);
+      tbody.appendChild(row);
+    });
+  }
+
+  table.appendChild(tbody);
+  return table;
 }
 
 function renderSurahList(query = "") {
   const normalizedQuery = query.trim().toLocaleLowerCase("bn");
+
   const filtered = surahs.filter((surah) => {
-    return (
+    const matchesQuery =
       surah.name_bn.toLocaleLowerCase("bn").includes(normalizedQuery) ||
       String(surah.surah).includes(normalizedQuery) ||
-      surah.surah.toLocaleString("bn-BD").includes(normalizedQuery)
-    );
+      surah.surah.toLocaleString("bn-BD").includes(normalizedQuery);
+
+    const matchesRevelation =
+      currentRevelationFilter === "all" ||
+      surah.revelation_bn === currentRevelationFilter;
+
+    return matchesQuery && matchesRevelation;
   });
 
   surahListElement.replaceChildren();
@@ -107,9 +150,15 @@ function renderSurahList(query = "") {
     return;
   }
 
-  const fragment = document.createDocumentFragment();
-  filtered.forEach((surah) => fragment.appendChild(createSurahCard(surah)));
-  surahListElement.appendChild(fragment);
+  const layout = document.createElement("div");
+  layout.className = "surah-tables";
+
+  layout.append(
+    createSurahTable(filtered.filter((surah) => surah.surah <= 57)),
+    createSurahTable(filtered.filter((surah) => surah.surah >= 58))
+  );
+
+  surahListElement.appendChild(layout);
 }
 
 async function loadSurahList() {
@@ -122,8 +171,7 @@ async function loadSurahList() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       data = await response.json();
     }
-
-    const data = await response.json();
+    if (!data) throw new Error("সূরার তালিকার Offline Data পাওয়া যায়নি।");
 
     if (!Array.isArray(data.surahs) || data.surahs.length !== 114) {
       throw new Error("সূরার তালিকা সঠিক নয়।");
@@ -172,6 +220,10 @@ async function loadSurahList() {
     }
 
     surahCount.textContent = `${surahs.length.toLocaleString("bn-BD")}টি সূরা`;
+    const makkiTotal = surahs.filter((surah) => surah.revelation_bn === "মাক্কী").length;
+    const madaniTotal = surahs.filter((surah) => surah.revelation_bn === "মাদানী").length;
+    makkiCount.textContent = `মাক্কী সূরা: ${makkiTotal.toLocaleString("bn-BD")}টি`;
+    madaniCount.textContent = `মাদানী সূরা: ${madaniTotal.toLocaleString("bn-BD")}টি`;
     renderSurahList();
   } catch (error) {
     console.error("Surah list loading failed:", error);
@@ -355,6 +407,12 @@ function renderCurrentSurah() {
   const surah = surahs.find((item) => item.surah === currentSurahNumber);
   if (!surah) return;
 
+  const toolbarLeft = document.querySelector(".reader-toolbar-left");
+  toolbarLeft.querySelector(".surah-edit-toolbar")?.remove();
+  if (isQuranAdmin) {
+    toolbarLeft.appendChild(createSurahEditToolbar());
+  }
+
   const heading = document.createElement("h2");
   heading.textContent = `সূরা ${currentSurahNumber.toLocaleString("bn-BD")} — ${surah.name_bn}`;
 
@@ -374,9 +432,7 @@ function renderCurrentSurah() {
   const count = document.createElement("p");
   count.textContent = `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
 
-  const headerItems = isQuranAdmin
-    ? [createSurahEditToolbar(), heading, count]
-    : [heading, count];
+  const headerItems = [heading, count];
 
   if (currentSurahNumber !== 9) {
     const bismillah = document.createElement("p");
@@ -491,8 +547,7 @@ async function openSurah(surahNumber) {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       data = await response.json();
     }
-
-    const data = await response.json();
+    if (!data) throw new Error("সূরার Offline Data পাওয়া যায়নি।");
 
     if (
       data.metadata.surah !== surahNumber ||
@@ -640,6 +695,18 @@ function showSurahList() {
   showMessage("");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+function setRevelationFilter(filter) {
+  currentRevelationFilter = filter;
+  surahCount.setAttribute("aria-pressed", String(filter === "all"));
+  makkiCount.setAttribute("aria-pressed", String(filter === "মাক্কী"));
+  madaniCount.setAttribute("aria-pressed", String(filter === "মাদানী"));
+  renderSurahList(surahSearch.value);
+}
+
+surahCount.addEventListener("click", () => setRevelationFilter("all"));
+makkiCount.addEventListener("click", () => setRevelationFilter("মাক্কী"));
+madaniCount.addEventListener("click", () => setRevelationFilter("মাদানী"));
 
 surahSearch.addEventListener("input", () => {
   renderSurahList(surahSearch.value);

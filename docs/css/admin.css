@@ -1,0 +1,225 @@
+/* Admin Dashboard */
+
+.admin-main {
+  max-width: 900px !important;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-header-link {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 13px;
+  border: 1px solid rgba(255,255,255,.5);
+  border-radius: 8px;
+}
+
+#adminThemeToggle {
+  padding: 9px 15px;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 9px;
+  background: transparent;
+  color: #ffffff;
+}
+
+.admin-panel {
+  padding: 28px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(20,60,45,.05);
+}
+
+.admin-panel h2,
+.admin-history-section h3 {
+  color: var(--primary);
+  margin-top: 0;
+}
+
+.admin-panel label {
+  display: block;
+  margin: 17px 0 7px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.admin-panel input,
+.admin-panel select,
+.admin-panel textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--background);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.7;
+}
+
+.admin-panel textarea {
+  resize: vertical;
+  text-align: justify;
+}
+
+.admin-panel input:focus,
+.admin-panel select:focus,
+.admin-panel textarea:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.admin-panel button {
+  padding: 11px 20px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.admin-panel button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+#adminLoginForm button,
+#adminPublishButton {
+  width: 100%;
+  margin-top: 22px;
+}
+
+.admin-dashboard-heading,
+.admin-history-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.admin-dashboard-heading p {
+  margin-top: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.admin-panel button.admin-secondary-button {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.admin-arabic-section {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--primary-light);
+}
+
+.admin-arabic-section label {
+  margin-top: 0;
+}
+
+#adminArabicText {
+  margin: 12px 0 0;
+  font-family: "Noto Sans Arabic", sans-serif;
+  font-size: 27px;
+  line-height: 2;
+  text-align: right;
+  color: var(--text);
+}
+
+.admin-message {
+  min-height: 25px;
+  margin-top: 14px;
+  color: var(--muted);
+}
+
+.admin-message.error-message {
+  color: #c0392b;
+}
+
+.admin-history-section {
+  margin-top: 35px;
+  padding-top: 25px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-history-heading {
+  margin-bottom: 15px;
+}
+
+#adminHistoryList {
+  overflow-x: auto;
+}
+
+.admin-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-history-table th,
+.admin-history-table td {
+  padding: 11px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-history-table th {
+  background: var(--primary-light);
+  color: var(--text);
+}
+
+.admin-history-table td {
+  overflow-wrap: anywhere;
+}
+
+body.dark-theme .admin-panel h2,
+body.dark-theme .admin-history-section h3 {
+  color: #e5c36c;
+}
+
+body.dark-theme .admin-panel button.admin-secondary-button {
+  background: #24382d;
+  color: #e5c36c;
+}
+
+body.dark-theme .admin-arabic-section {
+  background: #172720;
+}
+
+body.dark-theme .admin-history-table th {
+  background: #24382d;
+  color: #e5c36c;
+}
+
+@media (max-width: 600px) {
+  .admin-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-panel {
+    padding: 19px;
+  }
+
+  .admin-dashboard-heading {
+    align-items: flex-start;
+  }
+
+  #adminArabicText {
+    font-size: 23px;
+  }
+
+  .admin-history-table {
+    font-size: 12px;
+  }
+}

@@ -49,7 +49,11 @@
               <h2>সূরা তালিকা</h2>
               <p>পড়ার জন্য একটি সূরা নির্বাচন করুন</p>
             </div>
-            <span id="surahCount" class="count-badge">লোড হচ্ছে...</span>
+            <div class="surah-count-group">
+              <button id="surahCount" class="count-badge" type="button" aria-pressed="true">লোড হচ্ছে...</button>
+              <button id="makkiCount" class="count-badge" type="button" aria-pressed="false">মাক্কী: —</button>
+              <button id="madaniCount" class="count-badge" type="button" aria-pressed="false">মাদানী: —</button>
+            </div>
           </div>
 
           <label class="search-label" for="surahSearch">সূরার নাম বা নম্বর দিয়ে খুঁজুন</label>
@@ -61,14 +65,16 @@
             autocomplete="off"
           >
 
-          <div id="surahList" class="surah-grid" aria-live="polite">
+          <div id="surahList" class="surah-tables-container" aria-live="polite">
             <p class="loading-message">সূরার তালিকা লোড হচ্ছে...</p>
           </div>
         </div>
 
         <section id="surahReader" hidden>
           <div class="reader-toolbar">
-            <button id="backToSurahs" class="secondary-button" type="button">← সূরা তালিকা</button>
+            <div class="reader-toolbar-left">
+              <button id="backToSurahs" class="secondary-button" type="button">← সূরা তালিকা</button>
+            </div>
             <div class="surah-navigation">
               <button id="previousSurah" class="secondary-button" type="button">← আগের সূরা</button>
               <button id="nextSurah" class="secondary-button" type="button">পরের সূরা →</button>
@@ -92,7 +98,7 @@
     </footer>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="data/offline/surah-list.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
-  <script src="data/offline/surah-list.js"></script>

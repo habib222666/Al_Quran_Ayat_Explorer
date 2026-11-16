@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#075c46">
+  <title>Admin Dashboard — Al-Quran & Ayat Explorer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="brand">
+        <h1>Admin Dashboard</h1>
+        <p>আল কুরআন এর আয়াত অনুসন্ধান ও বিষয়ভিত্তিক অধ্যয়ন</p>
+      </div>
+      <div class="admin-header-actions">
+        <a class="admin-header-link" href="index.html">Quran Reader</a>
+        <button id="adminThemeToggle" type="button">Dark Mode</button>
+      </div>
+    </header>
+
+    <main id="mainContent" class="admin-main">
+      <section id="adminLoginSection" class="admin-panel">
+        <h2>Admin Login</h2>
+        <p>অনুমোদিত Admin Account দিয়ে প্রবেশ করুন।</p>
+
+        <form id="adminLoginForm">
+          <label for="adminEmail">Email Address</label>
+          <input
+            id="adminEmail"
+            type="email"
+            autocomplete="username"
+            required
+          >
+
+          <label for="adminPassword">Password</label>
+          <input
+            id="adminPassword"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+
+          <button id="adminLoginButton" type="submit">Login</button>
+        </form>
+
+        <p id="adminLoginMessage" class="admin-message" role="status"></p>
+      </section>
+
+      <section id="adminDashboard" class="admin-panel" hidden>
+        <div class="admin-dashboard-heading">
+          <div>
+            <h2>Correction Editor</h2>
+            <p id="adminAccountInfo"></p>
+          </div>
+          <button id="adminLogoutButton" class="admin-secondary-button" type="button">
+            Logout
+          </button>
+        </div>
+
+        <div class="admin-editor">
+          <label for="adminSurahSelect">সূরা নির্বাচন করুন</label>
+          <select id="adminSurahSelect">
+            <option value="">সূরা নির্বাচন করুন</option>
+          </select>
+
+          <label for="adminAyahSelect">আয়াত নির্বাচন করুন</label>
+          <select id="adminAyahSelect" disabled>
+            <option value="">প্রথমে সূরা নির্বাচন করুন</option>
+          </select>
+
+          <div class="admin-arabic-section">
+            <label>মূল আরবি আয়াত — পরিবর্তন করা যাবে না</label>
+            <p id="adminArabicText" lang="ar" dir="rtl">
+              আয়াত নির্বাচন করুন
+            </p>
+          </div>
+
+          <label for="adminTranslation">বাংলা অনুবাদ</label>
+          <textarea
+            id="adminTranslation"
+            rows="5"
+            placeholder="বাংলা অনুবাদ"
+            disabled
+          ></textarea>
+
+          <label for="adminFootnotes">ব্যাখ্যা ও Footnotes</label>
+          <textarea
+            id="adminFootnotes"
+            rows="9"
+            placeholder="ব্যাখ্যা ও ফুটনোট"
+            disabled
+          ></textarea>
+
+          <label for="adminReason">সংশোধনের কারণ (ঐচ্ছিক)</label>
+          <textarea
+            id="adminReason"
+            rows="3"
+            placeholder="কেন এই সংশোধন করা হচ্ছে?"
+            disabled
+          ></textarea>
+
+          <button id="adminPublishButton" type="button" disabled>
+            Save & Publish
+          </button>
+
+          <p id="adminEditorMessage" class="admin-message" role="status"></p>
+        </div>
+
+        <section class="admin-history-section">
+          <div class="admin-history-heading">
+            <h3>Correction History</h3>
+            <button id="adminRefreshHistory" class="admin-secondary-button" type="button">
+              Refresh
+            </button>
+          </div>
+          <div id="adminHistoryList">
+            <p>History লোড হয়নি।</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Al-Quran & Ayat Explorer — Administration</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
