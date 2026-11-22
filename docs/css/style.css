@@ -735,10 +735,11 @@ body.dark-theme .ayah-edit-field label {
   font-weight: 700;
 }
 
-.surah-index-table th:nth-child(1) { width: 14%; }
-.surah-index-table th:nth-child(2) { width: 38%; }
-.surah-index-table th:nth-child(3) { width: 22%; }
-.surah-index-table th:nth-child(4) { width: 26%; }
+.surah-index-table th:nth-child(1) { width: 11%; }
+.surah-index-table th:nth-child(2) { width: 31%; }
+.surah-index-table th:nth-child(3) { width: 17%; }
+.surah-index-table th:nth-child(4) { width: 19%; }
+.surah-index-table th:nth-child(5) { width: 22%; }
 
 .surah-index-table .surah-name-cell {
   text-align: left;
@@ -1756,5 +1757,109 @@ body.dark-theme .topic-category-open-button {
 
   .topic-category-open-button p {
     font-size: 0.76rem;
+  }
+}
+
+/* Surah / Para index toggle */
+.quran-index-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+
+.quran-index-toggle .count-badge {
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.quran-index-toggle .count-badge[aria-pressed="true"] {
+  background: var(--primary);
+  color: #fff;
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Para Explorer cards */
+.para-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.para-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.para-card h3 {
+  margin: 0 0 7px;
+  color: var(--primary);
+  font-size: 19px;
+}
+
+.para-summary {
+  margin: 0 0 13px;
+  color: var(--text-muted, var(--text));
+  font-size: 13px;
+}
+
+.para-segments {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  line-height: 1.85;
+  font-size: 14px;
+}
+
+.para-segments li {
+  padding: 2px 0;
+}
+
+.para-open-button {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.para-open-button:hover {
+  filter: brightness(0.94);
+}
+
+.para-open-button:focus-visible {
+  outline: 3px solid var(--primary-light);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .quran-index-toggle {
+    gap: 8px;
+  }
+
+  .quran-index-toggle .count-badge {
+    flex: 1;
+    padding-inline: 10px;
+  }
+
+  .para-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .para-card {
+    padding: 15px;
   }
 }

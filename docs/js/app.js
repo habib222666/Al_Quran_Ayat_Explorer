@@ -30,6 +30,12 @@ const surahBrowser = document.getElementById("surahBrowser");
 const surahReader = document.getElementById("surahReader");
 const surahListElement = document.getElementById("surahList");
 const surahSearch = document.getElementById("surahSearch");
+const paraSearch = document.getElementById("paraSearch");
+const paraListElement = document.getElementById("paraList");
+const showSurahIndexButton = document.getElementById("showSurahIndex");
+const showParaIndexButton = document.getElementById("showParaIndex");
+const surahIndexControls = document.getElementById("surahIndexControls");
+const paraIndexPanel = document.getElementById("paraIndexPanel");
 const surahCount = document.getElementById("surahCount");
 const makkiCount = document.getElementById("makkiCount");
 const madaniCount = document.getElementById("madaniCount");
@@ -72,6 +78,10 @@ const topicsList = document.getElementById("topicsList");
 const topicsMessage = document.getElementById("topicsMessage");
 
 let surahs = [];
+let paraIndex = [];
+let currentListMode = "surah";
+let currentStartAyah = 1;
+
 let currentRevelationFilter = "all";
 let currentSurahNumber = null;
 let isQuranAdmin = false;
@@ -99,7 +109,7 @@ function createSurahTable(items) {
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
 
-  ["সূরা নং", "সূরার নাম", "আয়াত সংখ্যা", "অবতীর্ণ"].forEach((label) => {
+  ["সূরা নং", "সূরার নাম", "পারা", "আয়াত সংখ্যা", "অবতীর্ণ"].forEach((label) => {
     const th = document.createElement("th");
     th.scope = "col";
     th.textContent = label;
@@ -114,14 +124,16 @@ function createSurahTable(items) {
   if (items.length === 0) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 4;
+    cell.colSpan = 5;
     cell.textContent = "কোনো সূরা পাওয়া যায়নি";
     row.appendChild(cell);
     tbody.appendChild(row);
   } else {
     items.forEach((surah) => {
       const row = document.createElement("tr");
-      row.className = surah.revelation_bn === "মাক্কী" ? "surah-row-makki" : "surah-row-madani";
+      row.className = surah.revelation_bn === "মাক্কী"
+        ? "surah-row-makki"
+        : "surah-row-madani";
 
       const numberCell = document.createElement("td");
       numberCell.textContent = surah.surah.toLocaleString("bn-BD");
@@ -137,13 +149,19 @@ function createSurahTable(items) {
       nameButton.addEventListener("click", () => openSurah(surah.surah));
       nameCell.appendChild(nameButton);
 
+      const paraCell = document.createElement("td");
+      paraCell.className = "surah-para-cell";
+      paraCell.textContent = (surah.para_numbers || [])
+        .map((para) => Number(para).toLocaleString("bn-BD"))
+        .join(", ") || "—";
+
       const ayahCell = document.createElement("td");
       ayahCell.textContent = surah.total_ayahs.toLocaleString("bn-BD");
 
       const revelationCell = document.createElement("td");
       revelationCell.textContent = surah.revelation_bn || "—";
 
-      row.append(numberCell, nameCell, ayahCell, revelationCell);
+      row.append(numberCell, nameCell, paraCell, ayahCell, revelationCell);
       tbody.appendChild(row);
     });
   }
@@ -154,12 +172,15 @@ function createSurahTable(items) {
 
 function renderSurahList(query = "") {
   const normalizedQuery = query.trim().toLocaleLowerCase("bn");
+  const englishQuery = normalizedQuery.replace(/[০-৯]/g, (digit) =>
+    "০১২৩৪৫৬৭৮৯".indexOf(digit).toString()
+  );
+  const isNumericQuery = /^\d+$/.test(englishQuery);
 
   const filtered = surahs.filter((surah) => {
-    const matchesQuery =
-      surah.name_bn.toLocaleLowerCase("bn").includes(normalizedQuery) ||
-      String(surah.surah).includes(normalizedQuery) ||
-      surah.surah.toLocaleString("bn-BD").includes(normalizedQuery);
+    const matchesQuery = isNumericQuery
+      ? Number(surah.surah) === Number(englishQuery)
+      : surah.name_bn.toLocaleLowerCase("bn").includes(normalizedQuery);
 
     const matchesRevelation =
       currentRevelationFilter === "all" ||
@@ -188,6 +209,175 @@ function renderSurahList(query = "") {
 
   surahListElement.appendChild(layout);
 }
+
+
+function renderParaList(query = "") {
+  if (!paraListElement) return;
+
+  const normalizedQuery = query.trim().toLocaleLowerCase("bn");
+  const englishQuery = normalizedQuery.replace(/[০-৯]/g, (digit) =>
+    "০১২৩৪৫৬৭৮৯".indexOf(digit).toString()
+  );
+
+  const isNumericQuery = /^\d+$/.test(englishQuery);
+
+  const filtered = paraIndex.filter((para) => {
+    return isNumericQuery
+      ? Number(para.para) === Number(englishQuery)
+      : false;
+  });
+
+  paraListElement.replaceChildren();
+
+  if (!filtered.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-message";
+    empty.textContent = "কোনো পারা পাওয়া যায়নি। অন্য নম্বর দিয়ে খুঁজুন।";
+    paraListElement.appendChild(empty);
+    return;
+  }
+
+  const layout = document.createElement("div");
+  layout.className = "para-list";
+
+  filtered.forEach((para) => {
+    const card = document.createElement("article");
+    card.className = "para-card";
+
+    const heading = document.createElement("h3");
+    heading.textContent = `পারা ${Number(para.para).toLocaleString("bn-BD")}`;
+
+    const totalAyahs = para.segments.reduce(
+      (total, segment) =>
+        total + Number(segment.end_ayah) - Number(segment.start_ayah) + 1,
+      0
+    );
+
+    const summary = document.createElement("p");
+    summary.className = "para-summary";
+    summary.textContent =
+      `${para.segments.length.toLocaleString("bn-BD")}টি সূরা অংশ · ` +
+      `${totalAyahs.toLocaleString("bn-BD")}টি আয়াত`;
+
+    const segmentList = document.createElement("ul");
+    segmentList.className = "para-segments";
+
+    para.segments.forEach((segment) => {
+      const surah = surahs.find(
+        (item) => Number(item.surah) === Number(segment.surah)
+      );
+      const item = document.createElement("li");
+      const surahName = surah
+        ? surah.name_bn
+        : `সূরা ${Number(segment.surah).toLocaleString("bn-BD")}`;
+
+      item.textContent =
+        `${surahName} — আয়াত ` +
+        `${Number(segment.start_ayah).toLocaleString("bn-BD")}–` +
+        `${Number(segment.end_ayah).toLocaleString("bn-BD")}`;
+
+      segmentList.appendChild(item);
+    });
+
+    const openButton = document.createElement("button");
+    openButton.type = "button";
+    openButton.className = "para-open-button";
+    openButton.textContent = "পারা খুলুন";
+    openButton.addEventListener("click", () => {
+      const firstSegment = para.segments[0];
+      if (firstSegment) {
+        openSurah(
+          Number(firstSegment.surah),
+          Number(firstSegment.start_ayah)
+        );
+      }
+    });
+
+    card.append(heading, summary, segmentList, openButton);
+    layout.appendChild(card);
+  });
+
+  paraListElement.appendChild(layout);
+}
+
+async function loadParaIndex() {
+  try {
+    let data;
+
+    if (window.location.protocol === "file:") {
+      data = window.QuranOfflineData?.paraIndex;
+    } else {
+      const response = await fetch("data/para-index.json");
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      data = await response.json();
+    }
+
+    if (!data || !Array.isArray(data.paras) || data.paras.length !== 30) {
+      throw new Error("৩০ পারার সম্পূর্ণ তালিকা পাওয়া যায়নি।");
+    }
+
+    paraIndex = data.paras;
+
+    if (
+      paraIndex.some(
+        (para, index) =>
+          Number(para.para) !== index + 1 ||
+          !Array.isArray(para.segments) ||
+          para.segments.length === 0
+      )
+    ) {
+      throw new Error("পারা তালিকার ডেটা সঠিক নয়।");
+    }
+
+    renderParaList(paraSearch?.value || "");
+    console.info("৩০ পারার তালিকা সফলভাবে লোড হয়েছে।");
+  } catch (error) {
+    console.error("Para index loading failed:", error);
+    if (paraListElement) {
+      paraListElement.textContent =
+        "পারা তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।";
+    }
+  }
+}
+
+function setIndexMode(mode) {
+  currentListMode = mode === "para" ? "para" : "surah";
+
+  if (surahIndexControls) {
+    surahIndexControls.hidden = currentListMode !== "surah";
+  }
+  if (paraIndexPanel) {
+    paraIndexPanel.hidden = currentListMode !== "para";
+  }
+
+  const countGroup = document.querySelector(".surah-count-group");
+  if (countGroup) {
+    countGroup.hidden = currentListMode !== "surah";
+  }
+
+  if (showSurahIndexButton) {
+    showSurahIndexButton.setAttribute(
+      "aria-pressed",
+      String(currentListMode === "surah")
+    );
+  }
+  if (showParaIndexButton) {
+    showParaIndexButton.setAttribute(
+      "aria-pressed",
+      String(currentListMode === "para")
+    );
+  }
+
+  if (currentListMode === "para") {
+    renderParaList(paraSearch?.value || "");
+  } else {
+    renderSurahList(surahSearch?.value || "");
+  }
+}
+
+showSurahIndexButton?.addEventListener("click", () => setIndexMode("surah"));
+showParaIndexButton?.addEventListener("click", () => setIndexMode("para"));
+paraSearch?.addEventListener("input", () => renderParaList(paraSearch.value));
 
 async function loadSurahList() {
   try {
@@ -253,6 +443,7 @@ async function loadSurahList() {
     makkiCount.textContent = `মাক্কী সূরা: ${makkiTotal.toLocaleString("bn-BD")}টি`;
     madaniCount.textContent = `মাদানী সূরা: ${madaniTotal.toLocaleString("bn-BD")}টি`;
     renderSurahList();
+    await loadParaIndex();
     renderTopicAdminControls();
   } catch (error) {
     console.error("Surah list loading failed:", error);
@@ -524,10 +715,18 @@ function renderCurrentSurah() {
     }
   }
 
+if (!isSurahEditing && currentStartAyah > 1) {
+  displayAyahs = displayAyahs.filter(
+    (ayah) => Number(ayah.aya) >= currentStartAyah
+  );
+}
+
 const count = document.createElement("p");
   count.textContent = currentSurahNumber === 1 && isSurahEditing
     ? "৭ আয়াত (Admin Edit-এ মূল ৬টি QuranEnc রেকর্ড)"
-    : `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
+    : currentStartAyah > 1 && !isSurahEditing
+      ? `আয়াত ${currentStartAyah.toLocaleString("bn-BD")}–${surah.total_ayahs.toLocaleString("bn-BD")}`
+      : `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
   const headerItems = [heading, count];
 
   if (currentSurahNumber !== 9) {
@@ -581,7 +780,7 @@ surahHeader.replaceChildren(...headerItems);
   ayahList.replaceChildren(fragment);
 }
 
-async function openSurah(surahNumber) {
+async function openSurah(surahNumber, startAyah = 1) {
   const surah = surahs.find((item) => item.surah === surahNumber);
   if (!surah) {
     showMessage("নির্বাচিত সূরাটি পাওয়া যায়নি।", true);
@@ -589,6 +788,10 @@ async function openSurah(surahNumber) {
   }
 
   currentSurahNumber = surahNumber;
+  currentStartAyah = Math.max(
+    1,
+    Math.min(Number(startAyah) || 1, surah.total_ayahs)
+  );
   isSurahEditing = false;
   currentSurahData = null;
   surahBrowser.hidden = true;
@@ -1621,6 +1824,7 @@ function showSurahList() {
   surahReader.hidden = true;
   surahBrowser.hidden = false;
   currentSurahNumber = null;
+  currentStartAyah = 1;
   currentSurahData = null;
   isSurahEditing = false;
   showMessage("");
