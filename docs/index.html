@@ -37,12 +37,28 @@
     </header>
 
     <main id="mainContent">
-      <section class="welcome-section">
-        <h2>الْقُرْآنُ الْكَرِيمُ</h2>
-        <p>পবিত্র আল-কুরআনের ১১৪টি সূরা ও ৬,২৩৬টি আয়াত</p>
+      <section id="homeView">
+        <section class="welcome-section">
+          <h2>الْقُرْآنُ الْكَرِيمُ</h2>
+          <p>পবিত্র আল-কুরআনের ১১৪টি সূরা ও ৬,২৩৬টি আয়াত</p>
+        </section>
+
+        <div class="home-card-grid">
+          <button id="openQuranCard" class="home-card" type="button">
+            <span class="home-card-icon">📖</span>
+            <strong>অর্থসহ আল-কুরআন</strong>
+            <span>আরবি আয়াত, বাংলা অর্থ, ব্যাখ্যা ও সূরাভিত্তিক পাঠ</span>
+          </button>
+          <button id="openTopicsCard" class="home-card" type="button">
+            <span class="home-card-icon">📚</span>
+            <strong>বিষয়ভিত্তিক আল-কুরআন</strong>
+            <span>বিভিন্ন বিষয় অনুযায়ী কুরআনের আয়াত অধ্যয়ন</span>
+          </button>
+        </div>
       </section>
 
-      <section id="quranSection">
+      <section id="quranSection" hidden>
+        <button id="backHomeFromQuran" class="secondary-button section-home-button" type="button">← মূল Home Page</button>
         <div id="surahBrowser">
           <div class="section-heading">
             <div>
@@ -74,6 +90,7 @@
           <div class="reader-toolbar">
             <div class="reader-toolbar-left">
               <button id="backToSurahs" class="secondary-button" type="button">← সূরা তালিকা</button>
+              <button id="backHomeFromReader" class="secondary-button" type="button">মূল Home</button>
             </div>
             <div class="surah-navigation">
               <button id="previousSurah" class="secondary-button" type="button">← আগের সূরা</button>
@@ -89,6 +106,55 @@
         </section>
 
         <p id="appMessage" class="app-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="topicsSection" class="topics-section" hidden>
+        <div class="topics-heading">
+          <div>
+            <h2>বিষয়ভিত্তিক আল-কুরআন</h2>
+            <p>বিষয় অনুযায়ী কুরআনের আয়াত পড়ুন ও অধ্যয়ন করুন</p>
+          </div>
+          <button id="backHomeFromTopics" class="secondary-button" type="button">← মূল Home Page</button>
+        </div>
+
+        <div id="topicAdminPanel" class="topic-admin-panel" hidden>
+          <h3>নতুন বিষয় তৈরি করুন</h3>
+          <div class="topic-form-row">
+            <div>
+              <label for="topicTitleInput">বিষয়ের নাম</label>
+              <input id="topicTitleInput" type="text" maxlength="150" placeholder="যেমন: ধৈর্য, নামাজ, দান-সদকা">
+            </div>
+            <div>
+              <label for="topicCategorySelect">বিষয়ের Category</label>
+              <select id="topicCategorySelect"></select>
+            </div>
+            <button id="createTopicButton" class="primary-button" type="button">বিষয় তৈরি</button>
+          </div>
+          <h3>বিষয়ে কুরআনের আয়াত যোগ করুন</h3>
+          <div class="topic-form-grid">
+            <div>
+              <label for="topicAyahSelect">বিষয় নির্বাচন</label>
+              <select id="topicAyahSelect" disabled><option value="">আগে বিষয় তৈরি করুন</option></select>
+            </div>
+            <div>
+              <label for="topicSurahSelect">সূরা নির্বাচন (১১৪টি)</label>
+              <select id="topicSurahSelect"><option value="">সূরা নির্বাচন করুন</option></select>
+            </div>
+            <div>
+              <label for="topicAyahNumberSelect">আয়াত নির্বাচন</label>
+              <select id="topicAyahNumberSelect" disabled><option value="">আগে সূরা নির্বাচন করুন</option></select>
+            </div>
+            <button id="addTopicAyahButton" class="primary-button" type="button" disabled>আয়াত যোগ করুন</button>
+          </div>
+        </div>
+        <div class="topic-search-bar">
+          <input id="topicSearchInput" type="search" placeholder="বিষয় বা Category খুঁজুন..." aria-label="বিষয় বা Category খুঁজুন">
+          <button id="topicBackButton" class="secondary-button" type="button" hidden>← আগের ধাপে ফিরুন</button>
+        </div>
+        <p id="topicsMessage" class="app-message" role="status" aria-live="polite"></p>
+        <div id="topicsList" class="topics-list" aria-live="polite">
+          <p class="loading-message">বিষয়গুলো লোড হচ্ছে...</p>
+        </div>
       </section>
     </main>
 

@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "SolaimanLipi";
+  src: url("../fonts/SolaimanLipi.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --primary: #075c46;
@@ -16,7 +24,7 @@
 
 body {
   margin: 0;
-  font-family: "Noto Sans Bengali", "Noto Sans Arabic", sans-serif;
+  font-family: "SolaimanLipi", "Noto Sans Arabic", sans-serif;
   background: var(--background);
   color: var(--text);
   line-height: 1.7;
@@ -401,6 +409,12 @@ body.dark-theme #quranSection h2 {
   font-size: 14px;
   line-height: 1.9;
   overflow-wrap: anywhere;
+}
+
+.footnote-content .footnote-reference {
+  font-size: 50% !important;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .footnote-content p {
@@ -921,4 +935,826 @@ body.dark-theme .search-label {
 
 body.dark-theme .surah-index-table th {
   color: #ffffff !important;
+}
+
+
+/* Al-Quran home and topic explorer */
+
+.home-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 26px auto;
+  max-width: 900px;
+}
+
+.home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 190px;
+  padding: 26px 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.10);
+}
+
+.home-card strong {
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.home-card > span:last-child {
+  line-height: 1.7;
+}
+
+.home-card-icon {
+  font-size: 2.4rem;
+}
+
+body.dark-theme .home-card {
+  background: #1d3028;
+  border-color: #496657;
+  color: #edf5ef;
+}
+
+body.dark-theme .home-card strong {
+  color: #e5c36c;
+}
+
+.section-home-button {
+  margin: 0 0 18px;
+}
+
+.topics-section {
+  width: 100%;
+}
+
+.topics-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.topics-heading h2 {
+  margin-bottom: 6px;
+}
+
+.topics-heading p {
+  margin-top: 0;
+  line-height: 1.6;
+}
+
+.topic-admin-panel {
+  margin: 20px 0 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.topic-admin-panel h3 {
+  margin: 0 0 14px;
+}
+
+.topic-admin-panel h3:not(:first-child) {
+  margin-top: 24px;
+}
+
+.topic-form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 2fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.topic-form-row label,
+.topic-form-grid label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+
+.topic-form-row input,
+.topic-form-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.topic-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.topic-form-grid button {
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.topics-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.topic-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface);
+}
+
+.topic-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.topic-card-header h3 {
+  margin: 0;
+  color: var(--primary);
+  overflow-wrap: anywhere;
+}
+
+.topic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.topic-actions button,
+.topic-ayah-remove {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+.topic-ayah-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topic-ayah-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--background);
+}
+
+.topic-ayah-link {
+  flex: 1;
+  padding: 5px 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.topic-ayah-link:hover {
+  text-decoration: underline;
+}
+
+.topic-ayah-remove {
+  flex-shrink: 0;
+}
+
+.topic-ayah-highlight {
+  outline: 3px solid #d6a832;
+  outline-offset: 2px;
+  background: rgba(214, 168, 50, 0.12);
+  transition: background 0.3s ease;
+}
+
+body.dark-theme .topic-card,
+body.dark-theme .topic-admin-panel {
+  background: #1d3028;
+  border-color: #496657;
+  color: #edf5ef;
+}
+
+body.dark-theme .topic-card-header h3,
+body.dark-theme .topic-ayah-link {
+  color: #e5c36c;
+}
+
+body.dark-theme .topic-ayah-row {
+  background: #263b31;
+}
+
+body.dark-theme .topic-form-row input,
+body.dark-theme .topic-form-grid select {
+  background: #14251d;
+  border-color: #496657;
+  color: #edf5ef;
+}
+
+body.dark-theme .topic-admin-panel label {
+  color: #edf5ef;
+}
+
+body.dark-theme .topic-card-header {
+  border-color: #496657;
+}
+
+@media (max-width: 700px) {
+  .home-card-grid,
+  .topics-list {
+    grid-template-columns: 1fr;
+  }
+
+  .home-card {
+    min-height: 155px;
+  }
+
+  .topics-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topic-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .topic-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topic-form-grid button {
+    width: 100%;
+  }
+
+  .topic-card-header {
+    flex-direction: column;
+  }
+}
+
+/* ===== Quran Topic Explorer - New Design ===== */
+
+.topic-form-row {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+}
+
+.topic-form-row select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.topic-category-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.topic-category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  min-height: 190px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.topic-category-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.topic-category-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+  border-radius: 13px;
+  background: var(--primary-light);
+  font-size: 25px;
+}
+
+.topic-category-card h3 {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 1.08rem;
+}
+
+.topic-category-card p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.91rem;
+  line-height: 1.6;
+}
+
+.topic-category-count {
+  margin-top: auto;
+  color: var(--primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.topic-topic-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.topic-browser-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px;
+}
+
+.topic-card-category {
+  margin: 0;
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.topic-browser-card h3,
+.topic-detail-card h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.topic-card-count,
+.topic-detail-summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.topic-open-button {
+  align-self: flex-start;
+  margin-top: 5px;
+  padding: 9px 16px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.topic-open-button:hover {
+  opacity: 0.88;
+}
+
+.topic-detail-view {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.topic-detail-card {
+  padding: 24px;
+}
+
+.topic-detail-card h3 {
+  margin: 8px 0;
+  font-size: 1.45rem;
+}
+
+.topic-detail-card .topic-ayah-list {
+  margin-top: 20px;
+}
+
+.topic-detail-actions {
+  margin-top: 20px;
+}
+
+body.dark-theme .topic-category-card,
+body.dark-theme .topic-browser-card,
+body.dark-theme .topic-detail-card {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+body.dark-theme .topic-category-card h3,
+body.dark-theme .topic-category-count,
+body.dark-theme .topic-card-category {
+  color: #e5c36c;
+}
+
+body.dark-theme .topic-category-icon {
+  background: #263b31;
+}
+
+body.dark-theme .topic-browser-card h3,
+body.dark-theme .topic-detail-card h3 {
+  color: var(--text);
+}
+
+body.dark-theme .topic-form-row select {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .topic-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .topic-category-grid,
+  .topic-topic-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .topic-category-card {
+    min-height: 160px;
+    padding: 18px;
+  }
+
+  .topic-form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .topic-form-row button {
+    width: 100%;
+  }
+
+  .topic-detail-card {
+    padding: 17px;
+  }
+
+  .topic-ayah-row {
+    align-items: flex-start;
+  }
+}
+
+
+/* Topic Explorer: inline Arabic ayah and Bengali translation */
+.topic-inline-ayah-list {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.topic-ayah-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--background);
+}
+
+.topic-ayah-reference {
+  margin: 0 0 16px;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.topic-ayah-arabic {
+  margin: 12px 0 20px;
+  color: var(--text);
+  font-family: "Noto Naskh Arabic", "Amiri", serif;
+  font-size: 1.8rem;
+  line-height: 2.1;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.topic-ayah-translation-label {
+  margin: 0 0 7px;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.topic-ayah-translation {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+.topic-ayah-card .topic-ayah-remove {
+  margin-top: 14px;
+}
+
+body.dark-theme .topic-ayah-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+@media (max-width: 600px) {
+  .topic-ayah-card {
+    padding: 15px;
+  }
+
+  .topic-ayah-arabic {
+    font-size: 1.55rem;
+    line-height: 2;
+  }
+}
+
+
+/* Compact topic ayah layout */
+.topic-inline-ayah-list {
+  gap: 9px;
+}
+
+.topic-ayah-card {
+  padding: 12px 15px;
+}
+
+.topic-ayah-arabic {
+  margin: 2px 0 7px;
+  line-height: 1.75;
+}
+
+.topic-ayah-translation {
+  line-height: 1.65;
+  text-align: justify;
+}
+
+.topic-ayah-reference {
+  margin: 9px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+
+.topic-ayah-card .topic-ayah-remove {
+  min-height: 0;
+  margin-top: 8px;
+  padding: 5px 10px;
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  .topic-ayah-card {
+    padding: 10px 12px;
+  }
+
+  .topic-ayah-arabic {
+    margin-bottom: 6px;
+    font-size: 1.5rem;
+    line-height: 1.75;
+  }
+
+  .topic-ayah-translation {
+    line-height: 1.6;
+  }
+}
+
+
+/* Show all topic categories in a single column */
+.topic-category-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+
+/* Compact single-column category buttons */
+.topic-category-card {
+  min-height: 0 !important;
+  padding: 10px 15px !important;
+  gap: 4px !important;
+}
+
+.topic-category-card .topic-category-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+}
+
+.topic-category-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.topic-category-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.topic-category-card .topic-category-count {
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+@media (max-width: 600px) {
+  .topic-category-card {
+    padding: 9px 12px !important;
+  }
+}
+
+
+/* Horizontal category row layout */
+.topic-category-card {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  row-gap: 2px !important;
+  align-items: center;
+  text-align: left;
+}
+
+.topic-category-card .topic-category-icon {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  margin: 0;
+  align-self: center;
+}
+
+.topic-category-card h3 {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  text-align: left;
+}
+
+.topic-category-card p {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+  text-align: left;
+}
+
+.topic-category-card .topic-category-count {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  align-self: center;
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .topic-category-card {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    column-gap: 9px;
+  }
+
+  .topic-category-card .topic-category-count {
+    font-size: 0.72rem;
+  }
+}
+
+
+/* Category cards with separate open and admin rename actions */
+.topic-category-card {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+  min-height: 0 !important;
+  padding: 10px 14px !important;
+  text-align: left;
+  cursor: default;
+  transform: none !important;
+}
+
+.topic-category-card .topic-category-icon {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  margin: 0;
+}
+
+.topic-category-open-button {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topic-category-open-button h3,
+.topic-category-open-button p {
+  margin: 0;
+}
+
+.topic-category-open-button h3 {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.topic-category-open-button p {
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.topic-category-card .topic-category-count {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  white-space: nowrap;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.topic-category-rename-button {
+  grid-column: 4;
+  grid-row: 1 / 3;
+  white-space: nowrap;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+}
+
+.topic-category-rename-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+body.dark-theme .topic-category-open-button {
+  color: inherit;
+}
+
+@media (max-width: 600px) {
+  .topic-category-card {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    column-gap: 8px;
+    padding: 9px 10px !important;
+  }
+
+  .topic-category-card .topic-category-count {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 0.7rem;
+  }
+
+  .topic-category-rename-button {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    padding: 5px 7px;
+    font-size: 0.72rem;
+  }
+
+  .topic-category-open-button h3 {
+    font-size: 0.92rem;
+  }
+
+  .topic-category-open-button p {
+    font-size: 0.76rem;
+  }
 }

@@ -50,6 +50,26 @@ const adminPassword = document.getElementById("adminPassword");
 const adminLoginSubmit = document.getElementById("adminLoginSubmit");
 const adminLoginCancel = document.getElementById("adminLoginCancel");
 const adminLoginMessage = document.getElementById("adminLoginMessage");
+const homeView = document.getElementById("homeView");
+const quranSection = document.getElementById("quranSection");
+const topicsSection = document.getElementById("topicsSection");
+const openQuranCard = document.getElementById("openQuranCard");
+const openTopicsCard = document.getElementById("openTopicsCard");
+const backHomeFromQuran = document.getElementById("backHomeFromQuran");
+const backHomeFromReader = document.getElementById("backHomeFromReader");
+const backHomeFromTopics = document.getElementById("backHomeFromTopics");
+const topicAdminPanel = document.getElementById("topicAdminPanel");
+const topicTitleInput = document.getElementById("topicTitleInput");
+const topicCategorySelect = document.getElementById("topicCategorySelect");
+const topicSearchInput = document.getElementById("topicSearchInput");
+const topicBackButton = document.getElementById("topicBackButton");
+const createTopicButton = document.getElementById("createTopicButton");
+const topicAyahSelect = document.getElementById("topicAyahSelect");
+const topicSurahSelect = document.getElementById("topicSurahSelect");
+const topicAyahNumberSelect = document.getElementById("topicAyahNumberSelect");
+const addTopicAyahButton = document.getElementById("addTopicAyahButton");
+const topicsList = document.getElementById("topicsList");
+const topicsMessage = document.getElementById("topicsMessage");
 
 let surahs = [];
 let currentRevelationFilter = "all";
@@ -57,6 +77,14 @@ let currentSurahNumber = null;
 let isQuranAdmin = false;
 let isSurahEditing = false;
 let currentSurahData = null;
+let quranTopics = [];
+let topicAyahs = [];
+let selectedTopicCategory = null;
+let selectedQuranTopicId = null;
+let topicSearchQuery = "";
+let topicBrowseLevel = "categories";
+let topicDetailRenderToken = 0;
+const topicSurahDataCache = new Map();
 
 function showMessage(message, isError = false) {
   appMessage.textContent = message;
@@ -225,6 +253,7 @@ async function loadSurahList() {
     makkiCount.textContent = `মাক্কী সূরা: ${makkiTotal.toLocaleString("bn-BD")}টি`;
     madaniCount.textContent = `মাদানী সূরা: ${madaniTotal.toLocaleString("bn-BD")}টি`;
     renderSurahList();
+    renderTopicAdminControls();
   } catch (error) {
     console.error("Surah list loading failed:", error);
     surahListElement.textContent = "সূরার তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে পেজটি আবার খুলুন।";
@@ -238,7 +267,29 @@ function sanitizeFootnotes(html) {
 
   function cleanNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
-      return document.createTextNode(node.textContent);
+      const text = node.textContent;
+      const pattern = /\[([\d\u09E6-\u09EF]+)\]/g;
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      let match;
+
+      while ((match = pattern.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+          fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+        }
+
+        const reference = document.createElement("span");
+        reference.className = "footnote-reference";
+        reference.textContent = match[0];
+        fragment.appendChild(reference);
+        lastIndex = pattern.lastIndex;
+      }
+
+      if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+
+      return fragment;
     }
 
     if (node.nodeType !== Node.ELEMENT_NODE) {
@@ -418,6 +469,7 @@ function renderCurrentSurah() {
 
   let displayAyahs = currentSurahData.ayahs.map((ayah) => ({ ...ayah }));
   let fatihaIntro = null;
+  let surahIntroFootnotes = null;
 
   if (currentSurahNumber === 1) {
     fatihaIntro = displayAyahs.shift();
@@ -425,13 +477,57 @@ function renderCurrentSurah() {
       ...ayah,
       aya: index + 1
     }));
+
+    if (!isSurahEditing) {
+      const finalAyah = displayAyahs[5];
+      const arabicSplit = "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ";
+      const translationSplit = "যাদের উপর আপনার ক্রোধ আপতিত হয়নি [২]";
+
+      if (!finalAyah || !finalAyah.arabic.includes(arabicSplit)) {
+        throw new Error("সূরা ফাতিহার শেষ আয়াত বিভক্ত করা যায়নি।");
+      }
+
+      const arabicParts = finalAyah.arabic.split(arabicSplit);
+      const translationParts = (finalAyah.translation || "").split(translationSplit);
+      const translationCanSplit = translationParts.length === 2;
+
+      displayAyahs = [
+        ...displayAyahs.slice(0, 5),
+        {
+          ...finalAyah,
+          aya: 6,
+          arabic: arabicParts[0].trim(),
+          translation: translationCanSplit ? translationParts[0].trim() : "",
+          footnotes: ""
+        },
+        {
+          ...finalAyah,
+          aya: 7,
+          arabic: arabicSplit,
+          translation: translationCanSplit
+            ? `${translationSplit}${translationParts[1]}`
+            : finalAyah.translation
+        }
+      ];
+    }
   } else if (currentSurahNumber !== 9) {
     displayAyahs[0].arabic = removeBismillahPrefix(displayAyahs[0].arabic);
   }
 
-  const count = document.createElement("p");
-  count.textContent = `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
+    if (currentSurahNumber !== 1 && !isSurahEditing) {
+    const firstAyah = displayAyahs[0];
+    const notes = firstAyah?.footnotes?.trim();
 
+    if (notes) {
+      surahIntroFootnotes = notes;
+      firstAyah.footnotes = "";
+    }
+  }
+
+const count = document.createElement("p");
+  count.textContent = currentSurahNumber === 1 && isSurahEditing
+    ? "৭ আয়াত (Admin Edit-এ মূল ৬টি QuranEnc রেকর্ড)"
+    : `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
   const headerItems = [heading, count];
 
   if (currentSurahNumber !== 9) {
@@ -443,58 +539,42 @@ function renderCurrentSurah() {
     headerItems.push(bismillah);
   }
 
-  if (fatihaIntro) {
-    if (isSurahEditing) {
-      headerItems.push(
+  const introFootnotes = fatihaIntro
+    ? fatihaIntro.footnotes
+    : surahIntroFootnotes;
+
+  if (
+    (introFootnotes && introFootnotes.trim()) ||
+    (fatihaIntro && isSurahEditing)
+  ) {
+    const details = document.createElement("details");
+    details.className = "footnote-details surah-intro-details";
+    details.open = isSurahEditing;
+
+    const summary = document.createElement("summary");
+    summary.textContent = "সূরা পরিচিতি ও ব্যাখ্যা দেখুন";
+
+    const content = document.createElement("div");
+    content.className = "footnote-content";
+
+    if (fatihaIntro && isSurahEditing) {
+      content.appendChild(
         createEditField(
-          "প্রথম আয়াতের বাংলা অনুবাদ",
-          fatihaIntro.translation,
+          "প্রথম আয়াতের Footnotes (HTML সমর্থিত)",
+          fatihaIntro.footnotes,
           fatihaIntro._sourceAya,
-          "translation"
+          "footnotes",
+          "ayah-edit-footnotes"
         )
       );
     } else {
-      const introTranslationLabel = document.createElement("h3");
-      introTranslationLabel.className = "translation-label";
-      introTranslationLabel.textContent = "প্রথম আয়াতের বাংলা অনুবাদ";
-
-      const introTranslation = document.createElement("p");
-      introTranslation.className = "ayah-translation";
-      introTranslation.textContent = fatihaIntro.translation;
-
-      headerItems.push(introTranslationLabel, introTranslation);
+      content.appendChild(sanitizeFootnotes(introFootnotes));
     }
 
-    if ((fatihaIntro.footnotes && fatihaIntro.footnotes.trim()) || isSurahEditing) {
-      const details = document.createElement("details");
-      details.className = "footnote-details surah-intro-details";
-      details.open = isSurahEditing;
-
-      const summary = document.createElement("summary");
-      summary.textContent = "সূরা পরিচিতি ও ব্যাখ্যা দেখুন";
-
-      const content = document.createElement("div");
-      content.className = "footnote-content";
-
-      if (isSurahEditing) {
-        content.appendChild(
-          createEditField(
-            "প্রথম আয়াতের Footnotes (HTML সমর্থিত)",
-            fatihaIntro.footnotes,
-            fatihaIntro._sourceAya,
-            "footnotes",
-            "ayah-edit-footnotes"
-          )
-        );
-      } else {
-        content.appendChild(sanitizeFootnotes(fatihaIntro.footnotes));
-      }
-
-      details.append(summary, content);
-      headerItems.push(details);
-    }
+    details.append(summary, content);
+    headerItems.push(details);
   }
-  surahHeader.replaceChildren(...headerItems);
+surahHeader.replaceChildren(...headerItems);
 
   const fragment = document.createDocumentFragment();
   displayAyahs.forEach((ayah) => fragment.appendChild(createAyahCard(ayah)));
@@ -686,6 +766,857 @@ async function saveCurrentSurah() {
   showMessage(`${savedCount.toLocaleString("bn-BD")}টি পরিবর্তন Supabase-এ Publish হয়েছে এবং History-তে সংরক্ষিত হয়েছে।`);
 }
 
+function showHomeView() {
+  isSurahEditing = false;
+  surahReader.hidden = true;
+  surahBrowser.hidden = false;
+  quranSection.hidden = true;
+  topicsSection.hidden = true;
+  homeView.hidden = false;
+  currentSurahNumber = null;
+  currentSurahData = null;
+  showMessage("");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showQuranHome() {
+  homeView.hidden = true;
+  topicsSection.hidden = true;
+  quranSection.hidden = false;
+  showSurahList();
+}
+
+function setTopicsMessage(message, isError = false) {
+  topicsMessage.textContent = message;
+  topicsMessage.classList.toggle("error-message", isError);
+}
+
+function renderTopicSelect() {
+  if (!topicAyahSelect) return;
+
+  const previousValue = topicAyahSelect.value;
+  topicAyahSelect.replaceChildren();
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "বিষয় নির্বাচন করুন";
+  topicAyahSelect.appendChild(placeholder);
+
+  quranTopics.forEach((topic) => {
+    const option = document.createElement("option");
+    option.value = topic.id;
+    option.textContent = topic.title;
+    topicAyahSelect.appendChild(option);
+  });
+
+  if (quranTopics.some((topic) => topic.id === previousValue)) {
+    topicAyahSelect.value = previousValue;
+  }
+
+  topicAyahSelect.disabled = !isQuranAdmin || quranTopics.length === 0;
+  updateTopicAyahButton();
+}
+
+function updateTopicAyahButton() {
+  if (!addTopicAyahButton) return;
+
+  addTopicAyahButton.disabled = !(
+    isQuranAdmin &&
+    topicAyahSelect.value &&
+    topicSurahSelect.value &&
+    topicAyahNumberSelect.value
+  );
+}
+
+
+const TOPIC_CATEGORIES = [
+  { name: "ঈমান ও আকিদা", icon: "☪", description: "তাওহিদ, ফেরেশতা ও তাকদির" },
+  { name: "ইবাদত", icon: "🤲", description: "সালাত, সিয়াম, যাকাত ও হজ" },
+  { name: "আখলাক ও চরিত্র", icon: "🌿", description: "ধৈর্য, কৃতজ্ঞতা, ক্ষমা ও উত্তম আচরণ" },
+  { name: "নবী ও রাসূল", icon: "📖", description: "নবী-রাসূল ও তাঁদের জীবন থেকে শিক্ষা" },
+  { name: "পরিবার ও সমাজ", icon: "👨‍👩‍👧", description: "পিতা-মাতা, সন্তান ও সামাজিক দায়িত্ব" },
+  { name: "হালাল ও হারাম", icon: "⚖️", description: "খাদ্য, ব্যবসা, সুদ ও বিধান" },
+  { name: "আখিরাত", icon: "🌙", description: "কিয়ামত, জান্নাত ও জাহান্নাম" },
+  { name: "সৃষ্টি ও প্রকৃতি", icon: "🌍", description: "আকাশ, পৃথিবী, পানি ও সৃষ্টি" },
+  { name: "অন্যান্য বিষয়", icon: "📚", description: "অন্যান্য গুরুত্বপূর্ণ কুরআনিক বিষয়" }
+];
+
+function getTopicCategories() {
+  const categories = TOPIC_CATEGORIES.map((category) => ({ ...category }));
+  const knownNames = new Set(categories.map((category) => category.name));
+
+  quranTopics.forEach((topic) => {
+    const name = (topic.category || "অন্যান্য বিষয়").trim();
+    if (name && !knownNames.has(name)) {
+      categories.push({
+        name,
+        icon: "📚",
+        description: "কুরআনের গুরুত্বপূর্ণ বিষয়সমূহ"
+      });
+      knownNames.add(name);
+    }
+  });
+
+  return categories;
+}
+
+function renderTopicCategorySelect() {
+  if (!topicCategorySelect) return;
+
+  const previousValue = topicCategorySelect.value;
+  topicCategorySelect.replaceChildren();
+
+  getTopicCategories().forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.name;
+    option.textContent = category.name;
+    topicCategorySelect.appendChild(option);
+  });
+
+  const hasPreviousValue = Array.from(topicCategorySelect.options).some(
+    (option) => option.value === previousValue
+  );
+
+  if (hasPreviousValue) {
+    topicCategorySelect.value = previousValue;
+  }
+}
+
+function makeTopicActionButton(label, className, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = label;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function renderTopicCategoryCards() {
+  topicsList.className = "topics-list topic-category-grid";
+
+  getTopicCategories().forEach((category) => {
+    const items = quranTopics.filter(
+      (topic) => (topic.category || "অন্যান্য বিষয়") === category.name
+    );
+    const ayahCount = topicAyahs.filter(
+      (ayah) => items.some((topic) => topic.id === ayah.topic_id)
+    ).length;
+
+    const card = document.createElement("article");
+    card.className = "topic-category-card";
+
+    const icon = document.createElement("span");
+    icon.className = "topic-category-icon";
+    icon.textContent = category.icon;
+
+    const openButton = makeTopicActionButton(
+      "",
+      "topic-category-open-button",
+      () => {
+        selectedTopicCategory = category.name;
+        selectedQuranTopicId = null;
+        topicBrowseLevel = "topics";
+        renderTopicsList();
+      }
+    );
+
+    const title = document.createElement("h3");
+    title.textContent = category.name;
+
+    const description = document.createElement("p");
+    description.textContent = category.description;
+    openButton.append(title, description);
+
+    const count = document.createElement("span");
+    count.className = "topic-category-count";
+    count.textContent =
+      `${items.length.toLocaleString("bn-BD")}টি বিষয় · ${ayahCount.toLocaleString("bn-BD")}টি আয়াত`;
+
+    card.append(icon, openButton, count);
+
+    if (isQuranAdmin) {
+      const renameButton = makeTopicActionButton(
+        "নাম পরিবর্তন",
+        "topic-category-rename-button",
+        () => renameQuranCategory(category, items)
+      );
+      renameButton.disabled = items.length === 0;
+      renameButton.title = items.length
+        ? "এই Category-র নাম পরিবর্তন করুন"
+        : "এই Category-তে কোনো বিষয় নেই";
+
+      card.appendChild(renameButton);
+    }
+
+    topicsList.appendChild(card);
+  });
+}
+function renderTopicCards(items) {
+  topicsList.className = "topics-list topic-topic-grid";
+
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "loading-message";
+    empty.textContent = "এই Category-তে এখনো কোনো বিষয় যোগ করা হয়নি।";
+    topicsList.appendChild(empty);
+    return;
+  }
+
+  items.forEach((topic) => {
+    const ayahCount = topicAyahs.filter(
+      (item) => item.topic_id === topic.id
+    ).length;
+
+    const card = document.createElement("article");
+    card.className = "topic-card topic-browser-card";
+
+    const category = document.createElement("p");
+    category.className = "topic-card-category";
+    category.textContent = topic.category || "অন্যান্য বিষয়";
+
+    const heading = document.createElement("h3");
+    heading.textContent = topic.title;
+
+    const count = document.createElement("p");
+    count.className = "topic-card-count";
+    count.textContent = `${ayahCount.toLocaleString("bn-BD")}টি আয়াত সংযুক্ত`;
+
+    const openButton = makeTopicActionButton("বিষয়টি পড়ুন →", "topic-open-button", () => {
+      selectedQuranTopicId = topic.id;
+      topicBrowseLevel = "detail";
+      renderTopicsList();
+    });
+
+    card.append(category, heading, count, openButton);
+
+    if (isQuranAdmin) {
+      const actions = document.createElement("div");
+      actions.className = "topic-actions";
+      actions.append(
+        makeTopicActionButton("নাম পরিবর্তন", "secondary-button", () => renameQuranTopic(topic)),
+        makeTopicActionButton("Delete", "danger-button", () => deleteQuranTopic(topic))
+      );
+      card.appendChild(actions);
+    }
+
+    topicsList.appendChild(card);
+  });
+}
+
+async function loadTopicSurahData(surahNumber) {
+  const number = Number(surahNumber);
+  if (topicSurahDataCache.has(number)) {
+    return topicSurahDataCache.get(number);
+  }
+
+  const loadingPromise = (async () => {
+    let data;
+
+    if (window.location.protocol === "file:") {
+      const numberKey = String(number).padStart(3, "0");
+      data = window.QuranOfflineData?.surahs?.[numberKey];
+
+      if (!data) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = `data/offline/surahs/surah-${numberKey}.js`;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error(`Offline সূরা ${number} লোড করা যায়নি।`));
+          document.head.appendChild(script);
+        });
+        data = window.QuranOfflineData?.surahs?.[numberKey];
+      }
+    } else {
+      const filename = `surah-${String(number).padStart(3, "0")}.json`;
+      const response = await fetch(`data/surahs/${filename}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      data = await response.json();
+    }
+
+    const surahInfo = surahs.find((item) => Number(item.surah) === number);
+    if (
+      !data ||
+      Number(data.metadata?.surah) !== number ||
+      !Array.isArray(data.ayahs) ||
+      (surahInfo && data.ayahs.length !== Number(surahInfo.total_ayahs))
+    ) {
+      throw new Error(`সূরা ${number}-এর ডেটা যাচাই করা যায়নি।`);
+    }
+
+    const ayahs = data.ayahs.map((ayah) => ({ ...ayah }));
+
+    if (supabaseClient) {
+      try {
+        const { data: corrections, error } = await supabaseClient
+          .from("quran_bn_corrections_public")
+          .select("surah_no,ayah_no,field_name,proposed_text")
+          .eq("surah_no", number);
+
+        if (error) throw error;
+
+        for (const correction of (corrections || [])) {
+          if (correction.field_name !== "translation") continue;
+          const target = ayahs.find(
+            (ayah) => Number(ayah.aya) === Number(correction.ayah_no)
+          );
+          if (target) target.translation = correction.proposed_text;
+        }
+      } catch (error) {
+        console.warn("Topic translation corrections could not be loaded:", error);
+      }
+    }
+
+    return { ayahs };
+  })();
+
+  topicSurahDataCache.set(number, loadingPromise);
+
+  try {
+    return await loadingPromise;
+  } catch (error) {
+    topicSurahDataCache.delete(number);
+    throw error;
+  }
+}
+
+function renderTopicDetail(topic) {
+  const renderToken = ++topicDetailRenderToken;
+  topicsList.className = "topics-list topic-detail-view";
+
+  if (!topic) {
+    topicBrowseLevel = "categories";
+    renderTopicCategoryCards();
+    return;
+  }
+
+  const card = document.createElement("article");
+  card.className = "topic-card topic-detail-card";
+
+  const category = document.createElement("p");
+  category.className = "topic-card-category";
+  category.textContent = topic.category || "অন্যান্য বিষয়";
+
+  const heading = document.createElement("h3");
+  heading.textContent = topic.title;
+
+  const items = topicAyahs.filter((item) => item.topic_id === topic.id);
+
+  const summary = document.createElement("p");
+  summary.className = "topic-detail-summary";
+  summary.textContent = `${items.length.toLocaleString("bn-BD")}টি আয়াত এই বিষয়ের সঙ্গে সংযুক্ত`;
+
+  card.append(category, heading, summary);
+
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "এই বিষয়ে এখনো কোনো আয়াত সংযুক্ত করা হয়নি।";
+    card.appendChild(empty);
+  } else {
+    const loading = document.createElement("p");
+    loading.className = "loading-message";
+    loading.textContent = "আয়াতের আরবি ও বাংলা অনুবাদ লোড হচ্ছে...";
+    card.appendChild(loading);
+  }
+
+  if (isQuranAdmin) {
+    const actions = document.createElement("div");
+    actions.className = "topic-actions topic-detail-actions";
+    actions.append(
+      makeTopicActionButton("নাম পরিবর্তন", "secondary-button", () => renameQuranTopic(topic)),
+      makeTopicActionButton("Delete", "danger-button", () => deleteQuranTopic(topic))
+    );
+    card.appendChild(actions);
+  }
+
+  topicsList.appendChild(card);
+
+  if (!items.length) return;
+
+  Promise.all(
+    items.map(async (item) => {
+      try {
+        const data = await loadTopicSurahData(item.surah_no);
+        const ayah = data.ayahs.find(
+          (entry) => Number(entry.aya) === Number(item.ayah_no)
+        );
+        return { item, ayah };
+      } catch (error) {
+        console.error("Topic ayah loading failed:", error);
+        return { item, error };
+      }
+    })
+  ).then((results) => {
+    if (
+      renderToken !== topicDetailRenderToken ||
+      topicBrowseLevel !== "detail" ||
+      selectedQuranTopicId !== topic.id ||
+      !topicsList.contains(card)
+    ) return;
+
+    const list = document.createElement("ul");
+    list.className = "topic-ayah-list topic-inline-ayah-list";
+
+    results.forEach(({ item, ayah, error }) => {
+      const row = document.createElement("li");
+      row.className = "topic-ayah-row topic-ayah-card";
+
+      const surah = surahs.find(
+        (entry) => Number(entry.surah) === Number(item.surah_no)
+      );
+      const surahName = surah ? surah.name_bn : `সূরা ${item.surah_no}`;
+
+      const reference = document.createElement("p");
+      reference.className = "topic-ayah-reference";
+      reference.textContent =
+        `সূরা : ${surahName} — আয়াত ${Number(item.surah_no).toLocaleString("bn-BD")} : ${Number(item.ayah_no).toLocaleString("bn-BD")}`;
+      if (ayah) {
+        const arabic = document.createElement("p");
+        arabic.className = "topic-ayah-arabic";
+        arabic.lang = "ar";
+        arabic.dir = "rtl";
+        arabic.textContent = ayah.arabic || "আরবি আয়াত পাওয়া যায়নি।";
+
+        const translation = document.createElement("p");
+        translation.className = "topic-ayah-translation";
+        translation.textContent = ayah.translation || "বাংলা অনুবাদ পাওয়া যায়নি।";
+
+        row.append(arabic, translation);
+        row.appendChild(reference);
+      } else {
+        const unavailable = document.createElement("p");
+        unavailable.className = "topic-ayah-translation";
+        unavailable.textContent = error
+          ? "এই আয়াতের ডেটা লোড করা যায়নি।"
+          : "নির্বাচিত আয়াতটি পাওয়া যায়নি।";
+        row.append(unavailable, reference);
+      }
+
+      if (isQuranAdmin) {
+        row.appendChild(makeTopicActionButton(
+          "Remove",
+          "danger-button topic-ayah-remove",
+          () => removeTopicAyah(item)
+        ));
+      }
+
+      list.appendChild(row);
+    });
+
+    const oldLoading = card.querySelector(".loading-message");
+    if (oldLoading) oldLoading.remove();
+    card.insertBefore(list, card.querySelector(".topic-detail-actions"));
+  });
+}
+
+function renderTopicsList() {
+  topicsList.replaceChildren();
+
+  topicBackButton.hidden =
+    topicBrowseLevel === "categories" && !topicSearchQuery;
+
+  topicBackButton.textContent =
+    topicBrowseLevel === "detail" ? "← বিষয় তালিকায় ফিরুন" :
+    topicBrowseLevel === "topics" ? "← Category-তে ফিরুন" :
+    "← সব Category";
+
+  if (!quranTopics.length) {
+    topicsList.className = "topics-list";
+    const empty = document.createElement("p");
+    empty.className = "loading-message";
+    empty.textContent = "এখনো কোনো বিষয় যোগ করা হয়নি।";
+    topicsList.appendChild(empty);
+    return;
+  }
+
+  if (topicSearchQuery) {
+    const query = topicSearchQuery.toLocaleLowerCase();
+    const matches = quranTopics.filter((topic) =>
+      `${topic.title} ${topic.category || "অন্যান্য বিষয়"}`
+        .toLocaleLowerCase()
+        .includes(query)
+    );
+    renderTopicCards(matches);
+    return;
+  }
+
+  if (topicBrowseLevel === "detail") {
+    renderTopicDetail(
+      quranTopics.find((topic) => topic.id === selectedQuranTopicId)
+    );
+    return;
+  }
+
+  if (topicBrowseLevel === "topics") {
+    renderTopicCards(
+      quranTopics.filter(
+        (topic) => (topic.category || "অন্যান্য বিষয়") === selectedTopicCategory
+      )
+    );
+    return;
+  }
+
+  renderTopicCategoryCards();
+}
+
+async function openTopicAyah(item) {
+  const surahNo = Number(item.surah_no);
+  const ayahNo = Number(item.ayah_no);
+
+  homeView.hidden = true;
+  topicsSection.hidden = true;
+  quranSection.hidden = false;
+
+  await openSurah(surahNo);
+
+  if (!currentSurahData || currentSurahNumber !== surahNo) return;
+
+  const expectedLabel = `আয়াত ${ayahNo.toLocaleString("bn-BD")}`;
+  const targetCard = Array.from(
+    ayahList.querySelectorAll(".ayah-card")
+  ).find((card) =>
+    card.querySelector(".ayah-number")?.textContent.trim() === expectedLabel
+  );
+
+  if (!targetCard) {
+    showMessage("নির্বাচিত আয়াতটি Reader-এ পাওয়া যায়নি।", true);
+    return;
+  }
+
+  targetCard.classList.add("topic-ayah-highlight");
+  targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+async function removeTopicAyah(item) {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  const confirmed = window.confirm(
+    "এই আয়াতটি বিষয় থেকে সরিয়ে ফেলতে চান?"
+  );
+  if (!confirmed) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from("quran_topic_ayahs")
+      .delete()
+      .eq("id", item.id);
+
+    if (error) throw error;
+
+    await loadTopics();
+    setTopicsMessage("আয়াতটি বিষয় থেকে সরানো হয়েছে।");
+  } catch (error) {
+    console.error("Topic ayah removal failed:", error);
+    setTopicsMessage("আয়াতটি সরানো যায়নি।", true);
+  }
+}
+
+async function renameQuranCategory(category, items) {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  if (!items.length) {
+    setTopicsMessage("এই Category-তে কোনো বিষয় নেই। তাই নাম পরিবর্তন করা যাচ্ছে না।", true);
+    return;
+  }
+
+  const response = window.prompt("নতুন Category-র নাম লিখুন:", category.name);
+  if (response === null) return;
+
+  const newName = response.trim();
+
+  if (!newName) {
+    setTopicsMessage("Category-র নাম খালি রাখা যাবে না।", true);
+    return;
+  }
+
+  if (newName === category.name) return;
+
+  const existingCategory = getTopicCategories().find(
+    (item) => item.name.toLowerCase() === newName.toLowerCase()
+  );
+
+  if (
+    existingCategory &&
+    !window.confirm(
+      `"${newName}" নামে একটি Category আগে থেকেই আছে। এই Category-র সব বিষয় সেখানে স্থানান্তর করবেন?`
+    )
+  ) {
+    return;
+  }
+
+  try {
+    const { error } = await supabaseClient
+      .from("quran_topics")
+      .update({ category: newName })
+      .eq("category", category.name);
+
+    if (error) throw error;
+
+    await loadTopics();
+    selectedTopicCategory = newName;
+    topicBrowseLevel = "topics";
+    renderTopicsList();
+    setTopicsMessage("Category-র নাম সফলভাবে পরিবর্তন হয়েছে।");
+  } catch (error) {
+    console.error("Category rename failed:", error);
+    setTopicsMessage("Category-র নাম পরিবর্তন করা যায়নি।", true);
+  }
+}
+
+async function renameQuranTopic(topic) {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  const newTitle = window.prompt("নতুন বিষয়ের নাম লিখুন:", topic.title);
+  if (newTitle === null) return;
+
+  const title = newTitle.trim();
+
+  if (!title) {
+    setTopicsMessage("বিষয়ের নাম খালি রাখা যাবে না।", true);
+    return;
+  }
+
+  if (title === topic.title) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from("quran_topics")
+      .update({ title })
+      .eq("id", topic.id);
+
+    if (error) throw error;
+
+    await loadTopics();
+    setTopicsMessage("বিষয়ের নাম পরিবর্তন হয়েছে।");
+  } catch (error) {
+    console.error("Topic rename failed:", error);
+    setTopicsMessage(
+      error.code === "23505"
+        ? "এই নামে অন্য একটি বিষয় আগে থেকেই রয়েছে।"
+        : "বিষয়ের নাম পরিবর্তন করা যায়নি।",
+      true
+    );
+  }
+}
+
+async function deleteQuranTopic(topic) {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  const confirmed = window.confirm(
+    `"${topic.title}" বিষয়টি এবং এর সব সংযুক্ত আয়াত মুছে ফেলতে চান?`
+  );
+  if (!confirmed) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from("quran_topics")
+      .delete()
+      .eq("id", topic.id);
+
+    if (error) throw error;
+
+    await loadTopics();
+    setTopicsMessage("বিষয় ও সংযুক্ত আয়াত মুছে ফেলা হয়েছে।");
+  } catch (error) {
+    console.error("Topic deletion failed:", error);
+    setTopicsMessage("বিষয় মুছে ফেলা যায়নি।", true);
+  }
+}
+
+async function addAyahToTopic() {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  const topicId = topicAyahSelect.value;
+  const surahNo = Number(topicSurahSelect.value);
+  const ayahNo = Number(topicAyahNumberSelect.value);
+
+  const selectedSurah = surahs.find(
+    (surah) => Number(surah.surah) === surahNo
+  );
+
+  if (
+    !topicId ||
+    !selectedSurah ||
+    !Number.isInteger(ayahNo) ||
+    ayahNo < 1 ||
+    ayahNo > Number(selectedSurah.total_ayahs)
+  ) {
+    setTopicsMessage("বিষয়, সূরা ও সঠিক আয়াত নির্বাচন করুন।", true);
+    return;
+  }
+
+  addTopicAyahButton.disabled = true;
+  setTopicsMessage("আয়াত যোগ হচ্ছে...");
+
+  try {
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+      throw userError || new Error("Admin session পাওয়া যায়নি।");
+    }
+
+    const { error } = await supabaseClient
+      .from("quran_topic_ayahs")
+      .insert({
+        topic_id: topicId,
+        surah_no: surahNo,
+        ayah_no: ayahNo,
+        created_by: userData.user.id
+      });
+
+    if (error) throw error;
+
+    await loadTopics();
+    topicSurahSelect.value = String(surahNo);
+    renderTopicAyahOptions();
+    topicAyahNumberSelect.value = "";
+    updateTopicAyahButton();
+    setTopicsMessage("নির্বাচিত আয়াত সফলভাবে বিষয়ে যোগ হয়েছে।");
+  } catch (error) {
+    console.error("Adding topic ayah failed:", error);
+    setTopicsMessage(
+      error.code === "23505"
+        ? "এই আয়াতটি এই বিষয়ে আগেই যোগ করা হয়েছে।"
+        : "আয়াত যোগ করা যায়নি। Admin Login ও ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+      true
+    );
+  } finally {
+    updateTopicAyahButton();
+  }
+}
+
+addTopicAyahButton.addEventListener("click", addAyahToTopic);
+topicAyahSelect.addEventListener("change", updateTopicAyahButton);
+topicAyahNumberSelect.addEventListener("change", updateTopicAyahButton);
+
+async function createQuranTopic() {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  const title = topicTitleInput.value.trim();
+
+  if (!title) {
+    setTopicsMessage("অনুগ্রহ করে বিষয়ের নাম লিখুন।", true);
+    topicTitleInput.focus();
+    return;
+  }
+
+  createTopicButton.disabled = true;
+  setTopicsMessage("বিষয় তৈরি হচ্ছে...");
+
+  try {
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+      throw userError || new Error("Admin session পাওয়া যায়নি।");
+    }
+
+    const { error } = await supabaseClient
+      .from("quran_topics")
+      .insert({
+        title,
+        category: topicCategorySelect.value || "অন্যান্য বিষয়",
+        created_by: userData.user.id
+      });
+
+    if (error) throw error;
+
+    topicTitleInput.value = "";
+    await loadTopics();
+    setTopicsMessage("বিষয় সফলভাবে তৈরি হয়েছে।");
+  } catch (error) {
+    console.error("Topic creation failed:", error);
+    setTopicsMessage(
+      error.code === "23505"
+        ? "এই নামে একটি বিষয় আগে থেকেই রয়েছে।"
+        : "বিষয় তৈরি করা যায়নি। Admin Login ও ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+      true
+    );
+  } finally {
+    createTopicButton.disabled = !isQuranAdmin;
+  }
+}
+
+createTopicButton.addEventListener("click", createQuranTopic);
+
+async function loadTopics() {
+  if (!supabaseClient) {
+    setTopicsMessage("Supabase সংযোগ পাওয়া যায়নি।", true);
+    return;
+  }
+
+  topicsList.textContent = "বিষয়গুলো লোড হচ্ছে...";
+  setTopicsMessage("");
+
+  const [topicsResult, ayahsResult] = await Promise.all([
+    supabaseClient
+      .from("quran_topics")
+      .select("id, title, category, created_at")
+      .order("title", { ascending: true }),
+    supabaseClient
+      .from("quran_topic_ayahs")
+      .select("id, topic_id, surah_no, ayah_no, created_at")
+      .order("surah_no", { ascending: true })
+      .order("ayah_no", { ascending: true })
+  ]);
+
+  if (topicsResult.error || ayahsResult.error) {
+    console.error("Topic loading failed:", topicsResult.error || ayahsResult.error);
+    setTopicsMessage("বিষয় বা আয়াত লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।", true);
+    topicsList.replaceChildren();
+    return;
+  }
+
+  quranTopics = topicsResult.data || [];
+  topicAyahs = ayahsResult.data || [];
+
+  renderTopicCategorySelect();
+  renderTopicSelect();
+  renderTopicsList();
+}
+
+function showTopicsHome() {
+  selectedTopicCategory = null;
+  selectedQuranTopicId = null;
+  topicBrowseLevel = "categories";
+  topicSearchQuery = "";
+  topicSearchInput.value = "";
+
+  homeView.hidden = true;
+  quranSection.hidden = true;
+  topicsSection.hidden = false;
+  isSurahEditing = false;
+  surahReader.hidden = true;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  loadTopics();
+}
+
+openQuranCard.addEventListener("click", showQuranHome);
+openTopicsCard.addEventListener("click", showTopicsHome);
+backHomeFromQuran.addEventListener("click", showHomeView);
+backHomeFromReader.addEventListener("click", showHomeView);
+backHomeFromTopics.addEventListener("click", showHomeView);
+
+topicSearchInput.addEventListener("input", () => {
+  topicSearchQuery = topicSearchInput.value.trim();
+  renderTopicsList();
+});
+
+topicBackButton.addEventListener("click", () => {
+  if (topicSearchQuery) {
+    topicSearchQuery = "";
+    topicSearchInput.value = "";
+  } else if (topicBrowseLevel === "detail") {
+    topicBrowseLevel = "topics";
+    selectedQuranTopicId = null;
+  } else if (topicBrowseLevel === "topics") {
+    topicBrowseLevel = "categories";
+    selectedTopicCategory = null;
+  }
+
+  renderTopicsList();
+});
+
 function showSurahList() {
   surahReader.hidden = true;
   surahBrowser.hidden = false;
@@ -743,11 +1674,77 @@ async function verifyQuranAdmin(user) {
   return Boolean(data);
 }
 
+function renderTopicAdminControls() {
+  if (!topicAdminPanel || !topicSurahSelect) return;
+
+  topicAdminPanel.hidden = !isQuranAdmin;
+
+  const expectedCount = surahs.length + 1;
+  if (topicSurahSelect.options.length === expectedCount) return;
+
+  const previousValue = topicSurahSelect.value;
+  topicSurahSelect.replaceChildren();
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "সূরা নির্বাচন করুন";
+  topicSurahSelect.appendChild(placeholder);
+
+  surahs.forEach((surah) => {
+    const option = document.createElement("option");
+    option.value = String(surah.surah);
+    option.textContent = `${surah.surah.toLocaleString("bn-BD")}. ${surah.name_bn}`;
+    topicSurahSelect.appendChild(option);
+  });
+
+  if (previousValue && surahs.some((surah) => String(surah.surah) === previousValue)) {
+    topicSurahSelect.value = previousValue;
+  }
+}
+
+function renderTopicAyahOptions() {
+  if (!topicSurahSelect || !topicAyahNumberSelect) return;
+
+  const selectedSurahNo = Number(topicSurahSelect.value);
+  const selectedSurah = surahs.find(
+    (surah) => Number(surah.surah) === selectedSurahNo
+  );
+
+  topicAyahNumberSelect.replaceChildren();
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = selectedSurah
+    ? "আয়াত নির্বাচন করুন"
+    : "আগে সূরা নির্বাচন করুন";
+  topicAyahNumberSelect.appendChild(placeholder);
+
+  if (!selectedSurah) {
+    topicAyahNumberSelect.disabled = true;
+    return;
+  }
+
+  const totalAyahs = Number(selectedSurah.total_ayahs);
+
+  for (let ayahNo = 1; ayahNo <= totalAyahs; ayahNo += 1) {
+    const option = document.createElement("option");
+    option.value = String(ayahNo);
+    option.textContent = ayahNo.toLocaleString("bn-BD");
+    topicAyahNumberSelect.appendChild(option);
+  }
+
+  topicAyahNumberSelect.disabled = false;
+  updateTopicAyahButton();
+}
+
+topicSurahSelect.addEventListener("change", renderTopicAyahOptions);
+
 function updateAdminUI() {
   adminStatus.hidden = !isQuranAdmin;
   adminLoginToggle.hidden = isQuranAdmin;
   adminLogout.hidden = !isQuranAdmin;
   adminLoginPanel.hidden = true;
+  renderTopicAdminControls();
 
   if (currentSurahData) {
     isSurahEditing = false;
