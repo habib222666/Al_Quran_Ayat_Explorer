@@ -137,20 +137,28 @@
           <h3>নতুন বিষয় তৈরি করুন</h3>
           <div class="topic-form-row">
             <div>
-              <label for="topicTitleInput">বিষয়ের নাম</label>
-              <input id="topicTitleInput" type="text" maxlength="150" placeholder="যেমন: ধৈর্য, নামাজ, দান-সদকা">
-            </div>
-            <div>
               <label for="topicCategorySelect">বিষয়ের শ্রেণি</label>
               <select id="topicCategorySelect"></select>
+            </div>
+            <div id="newTopicCategoryField" hidden>
+              <label for="newTopicCategoryInput">নতুন শ্রেণির নাম</label>
+              <input id="newTopicCategoryInput" type="text" maxlength="100" placeholder="নতুন শ্রেণির নাম লিখুন">
+            </div>
+            <div>
+              <label for="topicTitleInput">বিষয়ের নাম</label>
+              <input id="topicTitleInput" type="text" maxlength="150" placeholder="যেমন: ধৈর্য, নামাজ, দান-সদকা">
             </div>
             <button id="createTopicButton" class="primary-button" type="button">বিষয় তৈরি</button>
           </div>
           <h3>বিষয়ে কুরআনের আয়াত যোগ করুন</h3>
           <div class="topic-form-grid">
             <div>
+              <label for="topicAyahCategorySelect">বিষয়ের শ্রেণি</label>
+              <select id="topicAyahCategorySelect"><option value="">শ্রেণি নির্বাচন করুন</option></select>
+            </div>
+            <div>
               <label for="topicAyahSelect">বিষয় নির্বাচন</label>
-              <select id="topicAyahSelect" disabled><option value="">আগে বিষয় তৈরি করুন</option></select>
+              <select id="topicAyahSelect" disabled><option value="">আগে শ্রেণি নির্বাচন করুন</option></select>
             </div>
             <div>
               <label for="topicSurahSelect">সূরা নির্বাচন (১১৪টি)</label>

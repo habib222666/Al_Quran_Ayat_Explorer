@@ -67,6 +67,9 @@ const backHomeFromTopics = document.getElementById("backHomeFromTopics");
 const topicAdminPanel = document.getElementById("topicAdminPanel");
 const topicTitleInput = document.getElementById("topicTitleInput");
 const topicCategorySelect = document.getElementById("topicCategorySelect");
+const newTopicCategoryField = document.getElementById("newTopicCategoryField");
+const newTopicCategoryInput = document.getElementById("newTopicCategoryInput");
+const topicAyahCategorySelect = document.getElementById("topicAyahCategorySelect");
 const topicSearchInput = document.getElementById("topicSearchInput");
 const topicBackButton = document.getElementById("topicBackButton");
 const selectedTopicCategoryLabel = document.getElementById("selectedTopicCategoryLabel");
@@ -96,6 +99,7 @@ let isQuranAdmin = false;
 let isSurahEditing = false;
 let currentSurahData = null;
 let quranTopics = [];
+let quranTopicCategories = [];
 let topicAyahs = [];
 let selectedTopicCategory = null;
 let selectedQuranTopicId = null;
@@ -1011,28 +1015,37 @@ function setTopicsMessage(message, isError = false) {
 }
 
 function renderTopicSelect() {
-  if (!topicAyahSelect) return;
+  if (!topicAyahSelect || !topicAyahCategorySelect) return;
 
   const previousValue = topicAyahSelect.value;
+  const selectedCategory = topicAyahCategorySelect.value;
   topicAyahSelect.replaceChildren();
 
   const placeholder = document.createElement("option");
   placeholder.value = "";
-  placeholder.textContent = "বিষয় নির্বাচন করুন";
+  placeholder.textContent = selectedCategory
+    ? "বিষয় নির্বাচন করুন"
+    : "আগে শ্রেণি নির্বাচন করুন";
   topicAyahSelect.appendChild(placeholder);
 
-  quranTopics.forEach((topic) => {
+  const filteredTopics = selectedCategory
+    ? quranTopics.filter(
+        (topic) => (topic.category || "অন্যান্য বিষয়").trim() === selectedCategory
+      )
+    : [];
+
+  filteredTopics.forEach((topic) => {
     const option = document.createElement("option");
     option.value = topic.id;
     option.textContent = topic.title;
     topicAyahSelect.appendChild(option);
   });
 
-  if (quranTopics.some((topic) => topic.id === previousValue)) {
+  if (filteredTopics.some((topic) => topic.id === previousValue)) {
     topicAyahSelect.value = previousValue;
   }
 
-  topicAyahSelect.disabled = !isQuranAdmin || quranTopics.length === 0;
+  topicAyahSelect.disabled = !isQuranAdmin || filteredTopics.length === 0;
   updateTopicAyahButton();
 }
 
@@ -1048,58 +1061,62 @@ function updateTopicAyahButton() {
 }
 
 
-const TOPIC_CATEGORIES = [
-  { name: "আল্লাহ, ঈমান ও আকিদা", icon: "☪", description: "আল্লাহ, ঈমান, আকিদা ও নবী-রাসূল" },
-  { name: "ইবাদত ও ধর্মীয় বিধান", icon: "🤲", description: "সালাত, হজ্জ, রমজান ও ধর্মীয় বিধান" },
-  { name: "চরিত্র, নৈতিকতা ও ব্যক্তিগত গুণাবলি", icon: "🌿", description: "সততা, ধৈর্য, কৃতজ্ঞতা ও উত্তম চরিত্র" },
-  { name: "পরিবার, আত্মীয়তা ও সামাজিক সম্পর্ক", icon: "👨‍👩‍👧", description: "পরিবার, আত্মীয়তা ও সামাজিক দায়িত্ব" },
-  { name: "পাপ, অন্যায় ও নিষিদ্ধ কাজ", icon: "⚖️", description: "পাপ, অন্যায় ও নিষিদ্ধ বিষয়" },
-  { name: "বিচার, ন্যায়বিচার ও মানবাধিকার", icon: "⚖️", description: "ন্যায়বিচার, অধিকার ও মানুষের প্রতি সুবিচার" },
-  { name: "সৃষ্টি, প্রকৃতি ও অদৃশ্য জগৎ", icon: "🌍", description: "সৃষ্টি, প্রকৃতি, জিন ও অদৃশ্য জগৎ" },
-  { name: "পরকাল, জান্নাত ও আখিরাত", icon: "🌙", description: "পরকাল, বিচার দিবস ও জান্নাত" },
-  { name: "জ্ঞান, শিক্ষা ও দোয়া", icon: "📖", description: "জ্ঞান, শিক্ষা, দোয়া ও কুরআনের আয়াত" },
-  { name: "অর্থনীতি, সম্পদ ও লেনদেন", icon: "💰", description: "সম্পদ, দান, ব্যবসা ও লেনদেন" },
-  { name: "ব্যক্তিগত জীবন ও অন্যান্য বিষয়", icon: "📚", description: "ব্যক্তিগত জীবন ও অন্যান্য কুরআনিক বিষয়" }
-];
-
 function getTopicCategories() {
-  const categories = TOPIC_CATEGORIES.map((category) => ({ ...category }));
-  const knownNames = new Set(categories.map((category) => category.name));
-
-  quranTopics.forEach((topic) => {
-    const name = (topic.category || "অন্যান্য বিষয়").trim();
-    if (name && !knownNames.has(name)) {
-      categories.push({
-        name,
-        icon: "📚",
-        description: "কুরআনের গুরুত্বপূর্ণ বিষয়সমূহ"
-      });
-      knownNames.add(name);
-    }
-  });
-
-  return categories;
+  return quranTopicCategories.map((category) => ({ ...category }));
 }
 
 function renderTopicCategorySelect() {
-  if (!topicCategorySelect) return;
+  const categories = getTopicCategories();
 
-  const previousValue = topicCategorySelect.value;
-  topicCategorySelect.replaceChildren();
+  if (topicCategorySelect) {
+    const previousValue = topicCategorySelect.value;
+    topicCategorySelect.replaceChildren();
 
-  getTopicCategories().forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category.name;
-    option.textContent = category.name;
-    topicCategorySelect.appendChild(option);
-  });
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.name;
+      option.textContent = category.name;
+      topicCategorySelect.appendChild(option);
+    });
 
-  const hasPreviousValue = Array.from(topicCategorySelect.options).some(
-    (option) => option.value === previousValue
-  );
+    const newOption = document.createElement("option");
+    newOption.value = "__new_category__";
+    newOption.textContent = "＋ নতুন শ্রেণি তৈরি করুন";
+    topicCategorySelect.appendChild(newOption);
 
-  if (hasPreviousValue) {
-    topicCategorySelect.value = previousValue;
+    if (Array.from(topicCategorySelect.options).some(
+      (option) => option.value === previousValue
+    )) {
+      topicCategorySelect.value = previousValue;
+    }
+  }
+
+  if (topicAyahCategorySelect) {
+    const previousValue = topicAyahCategorySelect.value;
+    topicAyahCategorySelect.replaceChildren();
+
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "শ্রেণি নির্বাচন করুন";
+    topicAyahCategorySelect.appendChild(placeholder);
+
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.name;
+      option.textContent = category.name;
+      topicAyahCategorySelect.appendChild(option);
+    });
+
+    if (Array.from(topicAyahCategorySelect.options).some(
+      (option) => option.value === previousValue
+    )) {
+      topicAyahCategorySelect.value = previousValue;
+    }
+  }
+
+  if (newTopicCategoryField && topicCategorySelect) {
+    newTopicCategoryField.hidden =
+      topicCategorySelect.value !== "__new_category__";
   }
 }
 
@@ -1156,17 +1173,40 @@ function renderTopicCategoryCards() {
     card.append(icon, openButton, count);
 
     if (isQuranAdmin) {
+      const managementActions = document.createElement("div");
+      managementActions.className = "topic-category-management-actions";
+      managementActions.hidden = true;
+
+      const managementButton = makeTopicActionButton(
+        "ব্যবস্থাপনা",
+        "topic-category-manage-button",
+        () => {
+          managementActions.hidden = !managementActions.hidden;
+          managementButton.textContent = managementActions.hidden
+            ? "ব্যবস্থাপনা"
+            : "বন্ধ করুন";
+        }
+      );
+
       const renameButton = makeTopicActionButton(
         "নাম পরিবর্তন",
         "topic-category-rename-button",
         () => renameQuranCategory(category, items)
       );
-      renameButton.disabled = items.length === 0;
-      renameButton.title = items.length
-        ? "এই বিষয় শ্রেণির নাম পরিবর্তন করুন"
-        : "এই বিষয় শ্রেণিতে কোনো বিষয় নেই";
+      renameButton.title = "এই বিষয় শ্রেণির নাম পরিবর্তন করুন";
 
-      card.appendChild(renameButton);
+      const deleteButton = makeTopicActionButton(
+        "মুছে ফেলুন",
+        "topic-category-delete-button",
+        () => deleteQuranCategory(category, items)
+      );
+      deleteButton.disabled = false;
+      deleteButton.title = items.length
+        ? "মুছে ফেলার আগে এই শ্রেণির সব বিষয় অন্য শ্রেণিতে সরাতে হবে"
+        : "খালি শ্রেণিটি মুছে ফেলুন";
+
+      managementActions.append(renameButton, deleteButton);
+      card.append(managementButton, managementActions);
     }
 
     topicsList.appendChild(card);
@@ -1537,21 +1577,14 @@ async function removeTopicAyah(item) {
 async function renameQuranCategory(category, items) {
   if (!isQuranAdmin || !supabaseClient) return;
 
-  if (!items.length) {
-    setTopicsMessage("এই বিষয় শ্রেণিতে কোনো বিষয় নেই। তাই নাম পরিবর্তন করা যাচ্ছে না।", true);
-    return;
-  }
-
   const response = window.prompt("নতুন বিষয় শ্রেণির নাম লিখুন:", category.name);
   if (response === null) return;
 
   const newName = response.trim();
-
   if (!newName) {
     setTopicsMessage("বিষয় শ্রেণির নাম ফাঁকা রাখা যাবে না।", true);
     return;
   }
-
   if (newName === category.name) return;
 
   const existingCategory = getTopicCategories().find(
@@ -1561,18 +1594,15 @@ async function renameQuranCategory(category, items) {
   if (
     existingCategory &&
     !window.confirm(
-      `"${newName}" নামে একটি Category আগে থেকেই আছে। এই Category-র সব বিষয় সেখানে স্থানান্তর করবেন?`
+      `"${newName}" নামে একটি শ্রেণি আগে থেকেই আছে। এই শ্রেণির সব বিষয় সেখানে স্থানান্তর করবেন?`
     )
-  ) {
-    return;
-  }
+  ) return;
 
   try {
-    const { error } = await supabaseClient
-      .from("quran_topics")
-      .update({ category: newName })
-      .eq("category", category.name);
-
+    const { error } = await supabaseClient.rpc(
+      "rename_quran_topic_category",
+      { p_old_name: category.name, p_new_name: newName }
+    );
     if (error) throw error;
 
     await loadTopics();
@@ -1583,6 +1613,34 @@ async function renameQuranCategory(category, items) {
   } catch (error) {
     console.error("Category rename failed:", error);
     setTopicsMessage("বিষয় শ্রেণির নাম পরিবর্তন করা যায়নি।", true);
+  }
+}
+
+async function deleteQuranCategory(category, items) {
+  if (!isQuranAdmin || !supabaseClient) return;
+
+  if (items.length) {
+    setTopicsMessage("আগে এই শ্রেণির সব বিষয় অন্য শ্রেণিতে সরান।", true);
+    return;
+  }
+
+  if (!window.confirm(`"${category.name}" শ্রেণিটি মুছে ফেলতে চান?`)) return;
+
+  try {
+    const { error } = await supabaseClient.rpc(
+      "delete_quran_topic_category",
+      { p_category_name: category.name }
+    );
+    if (error) throw error;
+
+    await loadTopics();
+    setTopicsMessage("বিষয় শ্রেণিটি মুছে ফেলা হয়েছে।");
+  } catch (error) {
+    console.error("Category delete failed:", error);
+    setTopicsMessage(
+      error.message || "বিষয় শ্রেণিটি মুছে ফেলা যায়নি।",
+      true
+    );
   }
 }
 
@@ -1710,13 +1768,31 @@ async function addAyahToTopic() {
 }
 
 addTopicAyahButton.addEventListener("click", addAyahToTopic);
+topicAyahCategorySelect.addEventListener("change", renderTopicSelect);
 topicAyahSelect.addEventListener("change", updateTopicAyahButton);
 topicAyahNumberSelect.addEventListener("change", updateTopicAyahButton);
+
+topicCategorySelect.addEventListener("change", () => {
+  const isNewCategory = topicCategorySelect.value === "__new_category__";
+  newTopicCategoryField.hidden = !isNewCategory;
+  if (isNewCategory) newTopicCategoryInput.focus();
+});
 
 async function createQuranTopic() {
   if (!isQuranAdmin || !supabaseClient) return;
 
   const title = topicTitleInput.value.trim();
+  const isNewCategory = topicCategorySelect.value === "__new_category__";
+  const category = isNewCategory
+    ? newTopicCategoryInput.value.trim()
+    : topicCategorySelect.value;
+
+  if (!category) {
+    setTopicsMessage("অনুগ্রহ করে শ্রেণির নাম নির্বাচন বা লিখুন।", true);
+    if (isNewCategory) newTopicCategoryInput.focus();
+    else topicCategorySelect.focus();
+    return;
+  }
 
   if (!title) {
     setTopicsMessage("অনুগ্রহ করে বিষয়ের নাম লিখুন।", true);
@@ -1735,11 +1811,26 @@ async function createQuranTopic() {
       throw userError || new Error("প্রশাসকের অধিবেশন পাওয়া যায়নি।");
     }
 
+    if (isNewCategory) {
+      const { error: categoryError } = await supabaseClient
+        .from("quran_topic_categories")
+        .upsert(
+          {
+            name: category,
+            icon: "📚",
+            description: "কুরআনের গুরুত্বপূর্ণ বিষয়সমূহ",
+            sort_order: 100
+          },
+          { onConflict: "name", ignoreDuplicates: true }
+        );
+      if (categoryError) throw categoryError;
+    }
+
     const { error } = await supabaseClient
       .from("quran_topics")
       .insert({
         title,
-        category: topicCategorySelect.value || "অন্যান্য বিষয়",
+        category,
         created_by: userData.user.id
       });
 
@@ -1747,6 +1838,11 @@ async function createQuranTopic() {
 
     topicTitleInput.value = "";
     await loadTopics();
+    if (isNewCategory) {
+      topicCategorySelect.value = category;
+      newTopicCategoryInput.value = "";
+      newTopicCategoryField.hidden = true;
+    }
     setTopicsMessage("বিষয় সফলভাবে তৈরি হয়েছে।");
   } catch (error) {
     console.error("Topic creation failed:", error);
@@ -1772,7 +1868,12 @@ async function loadTopics() {
   topicsList.textContent = "বিষয়গুলো লোড হচ্ছে...";
   setTopicsMessage("");
 
-  const [topicsResult, ayahsResult] = await Promise.all([
+  const [categoriesResult, topicsResult, ayahsResult] = await Promise.all([
+    supabaseClient
+      .from("quran_topic_categories")
+      .select("id, name, icon, description, sort_order, created_at")
+      .order("sort_order", { ascending: true })
+      .order("name", { ascending: true }),
     supabaseClient
       .from("quran_topics")
       .select("id, title, category, created_at")
@@ -1784,13 +1885,17 @@ async function loadTopics() {
       .order("ayah_no", { ascending: true })
   ]);
 
-  if (topicsResult.error || ayahsResult.error) {
-    console.error("Topic loading failed:", topicsResult.error || ayahsResult.error);
-    setTopicsMessage("বিষয় বা আয়াত লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।", true);
+  if (categoriesResult.error || topicsResult.error || ayahsResult.error) {
+    console.error(
+      "Topic loading failed:",
+      categoriesResult.error || topicsResult.error || ayahsResult.error
+    );
+    setTopicsMessage("বিষয়, শ্রেণি বা আয়াত লোড করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।", true);
     topicsList.replaceChildren();
     return;
   }
 
+  quranTopicCategories = categoriesResult.data || [];
   quranTopics = topicsResult.data || [];
   topicAyahs = ayahsResult.data || [];
 

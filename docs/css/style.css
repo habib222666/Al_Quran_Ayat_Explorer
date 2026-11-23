@@ -2000,3 +2000,196 @@ body.dark-theme #surahReader .ayah-arabic.sajdah-ayah-highlight {
   line-height: 1;
   white-space: nowrap;
 }
+
+/* বিষয় ব্যবস্থাপনার বাটন: একই ও ছোট আকার */
+.topic-form-row #createTopicButton,
+.topic-form-grid #addTopicAyahButton {
+  box-sizing: border-box;
+  width: 132px;
+  min-width: 132px;
+  height: 38px;
+  min-height: 38px;
+  padding: 7px 10px;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+  justify-self: start;
+  align-self: end;
+}
+
+/* বিষয় তৈরির তিনটি ঘরের সমান মাপ */
+.topic-form-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.topic-form-row:has(#newTopicCategoryField:not([hidden])) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.topic-form-row select,
+.topic-form-row input,
+.topic-form-row #createTopicButton {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  min-height: 40px;
+  padding: 8px 10px;
+}
+
+.topic-form-row #createTopicButton {
+  justify-self: stretch;
+  align-self: end;
+}
+
+/* আয়াত যোগ করার পাঁচটি ঘর একই লাইনে */
+.topic-form-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+}
+
+.topic-form-grid select,
+.topic-form-grid #addTopicAyahButton {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  min-height: 40px;
+}
+
+.topic-form-grid #addTopicAyahButton {
+  padding: 8px 6px;
+  justify-self: stretch;
+  white-space: nowrap;
+}
+
+
+/* শ্রেণির নাম পরিবর্তন ও মুছে ফেলার দুটি বোতামের বিন্যাস */
+.topic-category-card {
+  grid-template-columns: 38px minmax(0, 1fr) auto auto auto !important;
+}
+
+.topic-category-rename-button {
+  grid-column: 4;
+  grid-row: 1 / 3;
+}
+
+.topic-category-delete-button {
+  grid-column: 5;
+  grid-row: 1 / 3;
+  white-space: nowrap;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+}
+
+.topic-category-delete-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .topic-category-card {
+    grid-template-columns: 32px minmax(0, 1fr) auto auto !important;
+    column-gap: 7px;
+  }
+
+  .topic-category-card .topic-category-count {
+    grid-column: 3 / 5;
+    grid-row: 1;
+  }
+
+  .topic-category-rename-button {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    padding: 5px 6px;
+    font-size: 0.7rem;
+  }
+
+  .topic-category-delete-button {
+    grid-column: 4;
+    grid-row: 2;
+    justify-self: end;
+    padding: 5px 6px;
+    font-size: 0.7rem;
+  }
+}
+
+
+/* শ্রেণির ব্যবস্থাপনার বোতাম */
+.topic-category-card {
+  grid-template-columns: 38px minmax(0, 1fr) auto auto !important;
+}
+
+.topic-category-manage-button {
+  grid-column: 4;
+  grid-row: 1;
+  white-space: nowrap;
+}
+
+.topic-category-management-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.topic-category-management-actions[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .topic-category-card {
+    grid-template-columns: 32px minmax(0, 1fr) auto !important;
+  }
+
+  .topic-category-card .topic-category-count {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .topic-category-manage-button {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    padding: 5px 7px;
+    font-size: 0.75rem;
+  }
+
+  .topic-category-management-actions {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+}
+
+/* ব্যবস্থাপনা বোতাম ছোট করা */
+.topic-category-manage-button {
+  padding: 4px 8px !important;
+  font-size: 0.72rem !important;
+  line-height: 1.2 !important;
+  min-height: 0 !important;
+  border-radius: 6px;
+}
+
+@media (max-width: 600px) {
+  .topic-category-manage-button {
+    padding: 3px 6px !important;
+    font-size: 0.66rem !important;
+  }
+}
+
+/* শ্রেণির ব্যবস্থাপনার ভেতরের বোতাম ছোট করা */
+.topic-category-management-actions button {
+  padding: 4px 8px !important;
+  font-size: 0.72rem !important;
+  line-height: 1.2 !important;
+  min-height: 0 !important;
+  border-radius: 6px;
+}
+
+@media (max-width: 600px) {
+  .topic-category-management-actions button {
+    padding: 3px 6px !important;
+    font-size: 0.66rem !important;
+  }
+}
