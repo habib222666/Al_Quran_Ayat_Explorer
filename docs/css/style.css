@@ -2193,3 +2193,8 @@ body.dark-theme #surahReader .ayah-arabic.sajdah-ayah-highlight {
     font-size: 0.66rem !important;
   }
 }
+
+/* ডার্ক মোডে নির্বাচিত বিষয় শ্রেণির লেখা স্পষ্ট করা */
+body.dark-theme .selected-topic-category-label {
+  color: #ffffff !important;
+}
