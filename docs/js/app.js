@@ -83,6 +83,13 @@ let currentListMode = "surah";
 let currentStartAyah = 1;
 
 let currentRevelationFilter = "all";
+const sajdahAyahKeys = new Set([
+  "7:206", "13:15", "16:50", "17:109",
+  "19:58", "22:18", "25:60", "27:26",
+  "32:15", "38:24", "41:38", "53:62",
+  "84:21", "96:19"
+]);
+
 let currentSurahNumber = null;
 let isQuranAdmin = false;
 let isSurahEditing = false;
@@ -536,13 +543,20 @@ function createAyahCard(ayah) {
 
   const arabic = document.createElement("p");
   arabic.className = "ayah-arabic";
+  if (sajdahAyahKeys.has(`${currentSurahNumber}:${ayah._sourceAya}`)) {
+    arabic.classList.add("sajdah-ayah-highlight");
+  }
   arabic.lang = "ar";
   arabic.dir = "rtl";
-  arabic.textContent = ayah.arabic;
+  const arabicAyahNumber = String(ayah._sourceAya).replace(
+    /[0-9]/g,
+    (digit) => "٠١٢٣٤٥٦٧٨٩"[Number(digit)]
+  );
+  arabic.textContent = `${ayah.arabic} ﴿${arabicAyahNumber}﴾`;
 
   const translationLabel = document.createElement("h3");
   translationLabel.className = "translation-label";
-  translationLabel.textContent = "বাংলা অনুবাদ";
+  translationLabel.textContent = "বাংলা অনুবাদ :";
 
   article.append(top, arabic, translationLabel);
 
@@ -553,7 +567,8 @@ function createAyahCard(ayah) {
   } else {
     const translation = document.createElement("p");
     translation.className = "ayah-translation";
-    translation.textContent = ayah.translation;
+    translation.appendChild(sanitizeFootnotes(ayah.translation || ""));
+
     article.appendChild(translation);
   }
 
@@ -1033,15 +1048,17 @@ function updateTopicAyahButton() {
 
 
 const TOPIC_CATEGORIES = [
-  { name: "ঈমান ও আকিদা", icon: "☪", description: "তাওহিদ, ফেরেশতা ও তাকদির" },
-  { name: "ইবাদত", icon: "🤲", description: "সালাত, সিয়াম, যাকাত ও হজ" },
-  { name: "আখলাক ও চরিত্র", icon: "🌿", description: "ধৈর্য, কৃতজ্ঞতা, ক্ষমা ও উত্তম আচরণ" },
-  { name: "নবী ও রাসূল", icon: "📖", description: "নবী-রাসূল ও তাঁদের জীবন থেকে শিক্ষা" },
-  { name: "পরিবার ও সমাজ", icon: "👨‍👩‍👧", description: "পিতা-মাতা, সন্তান ও সামাজিক দায়িত্ব" },
-  { name: "হালাল ও হারাম", icon: "⚖️", description: "খাদ্য, ব্যবসা, সুদ ও বিধান" },
-  { name: "আখিরাত", icon: "🌙", description: "কিয়ামত, জান্নাত ও জাহান্নাম" },
-  { name: "সৃষ্টি ও প্রকৃতি", icon: "🌍", description: "আকাশ, পৃথিবী, পানি ও সৃষ্টি" },
-  { name: "অন্যান্য বিষয়", icon: "📚", description: "অন্যান্য গুরুত্বপূর্ণ কুরআনিক বিষয়" }
+  { name: "আল্লাহ, ঈমান ও আকিদা", icon: "☪", description: "আল্লাহ, ঈমান, আকিদা ও নবী-রাসূল" },
+  { name: "ইবাদত ও ধর্মীয় বিধান", icon: "🤲", description: "সালাত, হজ্জ, রমজান ও ধর্মীয় বিধান" },
+  { name: "চরিত্র, নৈতিকতা ও ব্যক্তিগত গুণাবলি", icon: "🌿", description: "সততা, ধৈর্য, কৃতজ্ঞতা ও উত্তম চরিত্র" },
+  { name: "পরিবার, আত্মীয়তা ও সামাজিক সম্পর্ক", icon: "👨‍👩‍👧", description: "পরিবার, আত্মীয়তা ও সামাজিক দায়িত্ব" },
+  { name: "পাপ, অন্যায় ও নিষিদ্ধ কাজ", icon: "⚖️", description: "পাপ, অন্যায় ও নিষিদ্ধ বিষয়" },
+  { name: "বিচার, ন্যায়বিচার ও মানবাধিকার", icon: "⚖️", description: "ন্যায়বিচার, অধিকার ও মানুষের প্রতি সুবিচার" },
+  { name: "সৃষ্টি, প্রকৃতি ও অদৃশ্য জগৎ", icon: "🌍", description: "সৃষ্টি, প্রকৃতি, জিন ও অদৃশ্য জগৎ" },
+  { name: "পরকাল, জান্নাত ও আখিরাত", icon: "🌙", description: "পরকাল, বিচার দিবস ও জান্নাত" },
+  { name: "জ্ঞান, শিক্ষা ও দোয়া", icon: "📖", description: "জ্ঞান, শিক্ষা, দোয়া ও কুরআনের আয়াত" },
+  { name: "অর্থনীতি, সম্পদ ও লেনদেন", icon: "💰", description: "সম্পদ, দান, ব্যবসা ও লেনদেন" },
+  { name: "ব্যক্তিগত জীবন ও অন্যান্য বিষয়", icon: "📚", description: "ব্যক্তিগত জীবন ও অন্যান্য কুরআনিক বিষয়" }
 ];
 
 function getTopicCategories() {

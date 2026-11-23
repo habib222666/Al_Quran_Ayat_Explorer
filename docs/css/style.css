@@ -377,12 +377,14 @@ body.dark-theme #quranSection h2 {
 }
 
 .translation-label {
-  margin: 0 0 5px;
+  display: inline;
+  margin: 0 5px 0 0;
   color: var(--primary);
   font-size: 14px;
 }
 
 .ayah-translation {
+  display: inline;
   margin: 0;
   color: var(--text);
   font-size: 17px;
@@ -411,7 +413,8 @@ body.dark-theme #quranSection h2 {
   overflow-wrap: anywhere;
 }
 
-.footnote-content .footnote-reference {
+.footnote-content .footnote-reference,
+.ayah-translation .footnote-reference {
   font-size: 50% !important;
   line-height: 1;
   white-space: nowrap;
@@ -1862,4 +1865,11 @@ body.dark-theme .topic-category-open-button {
   .para-card {
     padding: 15px;
   }
+}
+
+
+/* Sajdah Ayah highlight in Quran Reader */
+body:not(.dark-theme) #surahReader .ayah-arabic.sajdah-ayah-highlight,
+body.dark-theme #surahReader .ayah-arabic.sajdah-ayah-highlight {
+  color: #d00000 !important;
 }
