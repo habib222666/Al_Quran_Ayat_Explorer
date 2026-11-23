@@ -24,7 +24,7 @@
 
 body {
   margin: 0;
-  font-family: "SolaimanLipi", "Noto Sans Arabic", sans-serif;
+  font-family: "SolaimanLipi", sans-serif;
   background: var(--background);
   color: var(--text);
   line-height: 1.7;
@@ -1872,4 +1872,131 @@ body.dark-theme .topic-category-open-button {
 body:not(.dark-theme) #surahReader .ayah-arabic.sajdah-ayah-highlight,
 body.dark-theme #surahReader .ayah-arabic.sajdah-ayah-highlight {
   color: #d00000 !important;
+}
+
+
+/* Topic browser layout refinements */
+.topics-nav-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.topic-topic-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.topic-browser-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+}
+
+.topic-browser-card h3 {
+  grid-column: 1;
+}
+
+.topic-browser-card .topic-card-count {
+  grid-column: 2;
+  white-space: nowrap;
+}
+
+.topic-browser-card .topic-open-button {
+  grid-column: 3;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.selected-topic-category-label {
+  margin: 14px 0 4px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .topics-nav-actions {
+    align-items: flex-start;
+  }
+
+  .topic-browser-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 10px;
+    padding: 12px;
+  }
+
+  .topic-browser-card h3 {
+    grid-column: 1 / -1;
+  }
+
+  .topic-browser-card .topic-card-count {
+    grid-column: 1;
+    white-space: normal;
+  }
+
+  .topic-browser-card .topic-open-button {
+    grid-column: 2;
+  }
+}
+
+/* Compact topic cards */
+.topic-browser-card {
+  gap: 7px;
+  padding: 9px 13px;
+  min-height: 0;
+}
+
+.topic-browser-card h3 {
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.topic-browser-card .topic-card-count {
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.topic-browser-card .topic-open-button {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  border-radius: 6px;
+}
+
+.topic-browser-card .topic-actions {
+  gap: 5px;
+}
+
+.topic-browser-card .topic-actions button {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 600px) {
+  .topic-browser-card {
+    gap: 5px 8px;
+    padding: 8px 10px;
+  }
+}
+
+
+/* বাংলা শিরোনাম ও মোড বোতামের সমান মাপ */
+#adminLoginToggle,
+#themeToggle {
+  box-sizing: border-box;
+  width: 116px;
+  min-width: 116px;
+  height: 38px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
 }

@@ -17,21 +17,21 @@
       </div>
       <div class="header-actions">
         <div class="admin-controls">
-          <span id="adminStatus" class="admin-status" hidden>Admin</span>
-          <button id="adminLoginToggle" class="header-button" type="button">Admin Login</button>
-          <button id="adminLogout" class="header-button" type="button" hidden>Logout</button>
+          <span id="adminStatus" class="admin-status" hidden>প্রশাসক</span>
+          <button id="adminLoginToggle" class="header-button" type="button">প্রশাসক প্রবেশ</button>
+          <button id="adminLogout" class="header-button" type="button" hidden>প্রস্থান</button>
           <form id="adminLoginPanel" class="admin-login-panel" hidden>
-            <label for="adminEmail">Admin Email</label>
+            <label for="adminEmail">প্রশাসকের ইমেইল</label>
             <input id="adminEmail" type="email" autocomplete="username" required>
-            <label for="adminPassword">Password</label>
+            <label for="adminPassword">পাসওয়ার্ড</label>
             <input id="adminPassword" type="password" autocomplete="current-password" required>
-            <button id="adminLoginSubmit" class="header-button" type="submit">Login</button>
-            <button id="adminLoginCancel" class="header-button" type="button">Cancel</button>
+            <button id="adminLoginSubmit" class="header-button" type="submit">প্রবেশ করুন</button>
+            <button id="adminLoginCancel" class="header-button" type="button">বাতিল</button>
             <p id="adminLoginMessage" role="status" aria-live="polite"></p>
           </form>
         </div>
         <button id="themeToggle" type="button" aria-label="থিম পরিবর্তন">
-          Dark Mode
+          গাঢ় মোড
         </button>
       </div>
     </header>
@@ -58,7 +58,7 @@
       </section>
 
       <section id="quranSection" hidden>
-        <button id="backHomeFromQuran" class="secondary-button section-home-button" type="button">← মূল Home Page</button>
+        <button id="backHomeFromQuran" class="secondary-button section-home-button" type="button">← মূল পাতায় ফিরুন</button>
         <div id="surahBrowser">
           <div class="section-heading">
             <div>
@@ -103,7 +103,7 @@
           <div class="reader-toolbar">
             <div class="reader-toolbar-left">
               <button id="backToSurahs" class="secondary-button" type="button">← সূরা তালিকা</button>
-              <button id="backHomeFromReader" class="secondary-button" type="button">মূল Home</button>
+              <button id="backHomeFromReader" class="secondary-button" type="button">মূল পাতায় ফিরুন</button>
             </div>
             <div class="surah-navigation">
               <button id="previousSurah" class="secondary-button" type="button">← আগের সূরা</button>
@@ -127,7 +127,10 @@
             <h2>বিষয়ভিত্তিক আল-কুরআন</h2>
             <p>বিষয় অনুযায়ী কুরআনের আয়াত পড়ুন ও অধ্যয়ন করুন</p>
           </div>
-          <button id="backHomeFromTopics" class="secondary-button" type="button">← মূল Home Page</button>
+          <div class="topics-nav-actions">
+            <button id="backHomeFromTopics" class="secondary-button" type="button">← মূল পাতায় ফিরুন</button>
+            <button id="topicBackButton" class="secondary-button" type="button" hidden>← আগের ধাপে ফিরুন</button>
+          </div>
         </div>
 
         <div id="topicAdminPanel" class="topic-admin-panel" hidden>
@@ -138,7 +141,7 @@
               <input id="topicTitleInput" type="text" maxlength="150" placeholder="যেমন: ধৈর্য, নামাজ, দান-সদকা">
             </div>
             <div>
-              <label for="topicCategorySelect">বিষয়ের Category</label>
+              <label for="topicCategorySelect">বিষয়ের শ্রেণি</label>
               <select id="topicCategorySelect"></select>
             </div>
             <button id="createTopicButton" class="primary-button" type="button">বিষয় তৈরি</button>
@@ -161,9 +164,9 @@
           </div>
         </div>
         <div class="topic-search-bar">
-          <input id="topicSearchInput" type="search" placeholder="বিষয় বা Category খুঁজুন..." aria-label="বিষয় বা Category খুঁজুন">
-          <button id="topicBackButton" class="secondary-button" type="button" hidden>← আগের ধাপে ফিরুন</button>
+          <input id="topicSearchInput" type="search" placeholder="বিষয় বা শ্রেণি খুঁজুন..." aria-label="বিষয় বা শ্রেণি খুঁজুন">
         </div>
+        <p id="selectedTopicCategoryLabel" class="selected-topic-category-label" hidden></p>
         <p id="topicsMessage" class="app-message" role="status" aria-live="polite"></p>
         <div id="topicsList" class="topics-list" aria-live="polite">
           <p class="loading-message">বিষয়গুলো লোড হচ্ছে...</p>

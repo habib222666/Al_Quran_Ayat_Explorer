@@ -52,7 +52,7 @@ function setLoggedIn(user) {
   currentUser = user;
   loginSection.hidden = true;
   dashboard.hidden = false;
-  $("adminAccountInfo").textContent = user.email || "Admin Account";
+  $("adminAccountInfo").textContent = user.email || "প্রশাসক অ্যাকাউন্ট";
 }
 
 function setLoggedOut() {
@@ -69,7 +69,7 @@ function setLoggedOut() {
 function applyAdminTheme() {
   const dark = localStorage.getItem("quran-explorer-theme") === "dark";
   document.body.classList.toggle("dark-theme", dark);
-  $("adminThemeToggle").textContent = dark ? "Light Mode" : "Dark Mode";
+  $("adminThemeToggle").textContent = dark ? "হালকা মোড" : "গাঢ় মোড";
 }
 
 $("adminThemeToggle").addEventListener("click", () => {
@@ -101,12 +101,12 @@ async function verifyQuranAdmin(user) {
 }
 
 async function restoreAdminSession() {
-  showMessage(loginMessage, "Session যাচাই হচ্ছে...");
+  showMessage(loginMessage, "অধিবেশন যাচাই করা হচ্ছে...");
 
   const { data, error } = await supabaseClient.auth.getSession();
 
   if (error) {
-    showMessage(loginMessage, "Session যাচাই করা যায়নি: " + error.message, true);
+    showMessage(loginMessage, "অধিবেশন যাচাই করা যায়নি: " + error.message, true);
     return;
   }
 
@@ -124,7 +124,7 @@ async function restoreAdminSession() {
     if (!isAdmin) {
       await supabaseClient.auth.signOut();
       setLoggedOut();
-      showMessage(loginMessage, "এই Account-এর Quran Admin অনুমতি নেই।", true);
+      showMessage(loginMessage, "এই অ্যাকাউন্টে কুরআন প্রশাসকের অনুমতি নেই।", true);
       return;
     }
 
@@ -133,7 +133,7 @@ async function restoreAdminSession() {
     await loadCorrectionHistory();
   } catch (error) {
     setLoggedOut();
-    showMessage(loginMessage, "Admin যাচাই ব্যর্থ: " + error.message, true);
+    showMessage(loginMessage, "প্রশাসক যাচাই ব্যর্থ: " + error.message, true);
   }
 }
 
@@ -145,7 +145,7 @@ loginForm.addEventListener("submit", async (event) => {
 
   const button = $("adminLoginButton");
   button.disabled = true;
-  showMessage(loginMessage, "Login যাচাই হচ্ছে...");
+  showMessage(loginMessage, "প্রবেশের তথ্য যাচাই করা হচ্ছে...");
 
   try {
     const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -160,14 +160,14 @@ loginForm.addEventListener("submit", async (event) => {
     const user = data.user;
 
     if (!user) {
-      throw new Error("Login Account পাওয়া যায়নি।");
+      throw new Error("প্রবেশের অ্যাকাউন্ট পাওয়া যায়নি।");
     }
 
     const isAdmin = await verifyQuranAdmin(user);
 
     if (!isAdmin) {
       await supabaseClient.auth.signOut();
-      throw new Error("এই Account-এর Quran Admin অনুমতি নেই।");
+      throw new Error("এই অ্যাকাউন্টে কুরআন প্রশাসকের অনুমতি নেই।");
     }
 
     loginForm.reset();
@@ -177,7 +177,7 @@ loginForm.addEventListener("submit", async (event) => {
     await loadSurahOptions();
     await loadCorrectionHistory();
   } catch (error) {
-    showMessage(loginMessage, error.message || "Login ব্যর্থ হয়েছে।", true);
+    showMessage(loginMessage, error.message || "প্রবেশ করা যায়নি।", true);
   } finally {
     button.disabled = false;
   }
@@ -187,12 +187,12 @@ $("adminLogoutButton").addEventListener("click", async () => {
   const { error } = await supabaseClient.auth.signOut();
 
   if (error) {
-    showMessage(editorMessage, "Logout ব্যর্থ: " + error.message, true);
+    showMessage(editorMessage, "প্রস্থান ব্যর্থ: " + error.message, true);
     return;
   }
 
   setLoggedOut();
-  showMessage(loginMessage, "আপনি Logout করেছেন।");
+  showMessage(loginMessage, "আপনি প্রস্থান করেছেন।");
 });
 
 /* ---------- Surah and Ayah data ---------- */
@@ -262,7 +262,7 @@ surahSelect.addEventListener("change", async () => {
       !Array.isArray(data.ayahs) ||
       data.ayahs.length === 0
     ) {
-      throw new Error("সূরার JSON Data সঠিক নয়।");
+      throw new Error("সূরার তথ্য সঠিক নয়।");
     }
 
     currentSurah = {
@@ -368,7 +368,7 @@ ayahSelect.addEventListener("change", async () => {
 
 publishButton.addEventListener("click", async () => {
   if (!currentUser || !currentSurah || !currentAyah) {
-    showMessage(editorMessage, "প্রথমে Admin Login করে আয়াত নির্বাচন করুন।", true);
+    showMessage(editorMessage, "প্রথমে প্রশাসক হিসেবে প্রবেশ করে আয়াত নির্বাচন করুন।", true);
     return;
   }
 
@@ -387,7 +387,7 @@ publishButton.addEventListener("click", async () => {
   }
 
   if (changedFields.some((field) => !newValues[field].trim())) {
-    showMessage(editorMessage, "অনুবাদ ও Footnotes ফাঁকা রাখা যাবে না।", true);
+    showMessage(editorMessage, "অনুবাদ ও পাদটীকা ফাঁকা রাখা যাবে না।", true);
     return;
   }
 
@@ -400,7 +400,7 @@ publishButton.addEventListener("click", async () => {
   }
 
   publishButton.disabled = true;
-  showMessage(editorMessage, "সংশোধন Save & Publish হচ্ছে...");
+  showMessage(editorMessage, "সংশোধন সংরক্ষণ ও প্রকাশ করা হচ্ছে...");
 
   const savedFields = [];
 
@@ -419,7 +419,7 @@ publishButton.addEventListener("click", async () => {
 
       if (error) {
         throw new Error(
-          `${field === "translation" ? "অনুবাদ" : "Footnotes"} Save ব্যর্থ: ${error.message}`
+          `${field === "translation" ? "অনুবাদ" : "ব্যাখ্যামূলক টীকা"} Save ব্যর্থ: ${error.message}`
         );
       }
 
@@ -428,7 +428,7 @@ publishButton.addEventListener("click", async () => {
     }
 
     reasonInput.value = "";
-    showMessage(editorMessage, "সংশোধন সফলভাবে Save & Publish হয়েছে।");
+    showMessage(editorMessage, "সংশোধন সফলভাবে সংরক্ষণ ও প্রকাশ হয়েছে।");
 
     await loadCorrectionHistory();
   } catch (error) {
@@ -461,7 +461,7 @@ async function loadCorrectionHistory() {
     return;
   }
 
-  historyList.textContent = "History লোড হচ্ছে...";
+  historyList.textContent = "ইতিহাস আনা হচ্ছে...";
 
   try {
     const { data: history, error } = await supabaseClient
@@ -475,7 +475,7 @@ async function loadCorrectionHistory() {
     }
 
     if (!history || history.length === 0) {
-      historyList.textContent = "এখনো কোনো Correction History নেই।";
+      historyList.textContent = "এখনো কোনো সংশোধনের ইতিহাস নেই।";
       return;
     }
 
@@ -504,7 +504,7 @@ async function loadCorrectionHistory() {
       "সময়",
       "সূরা",
       "আয়াত",
-      "Field",
+      "তথ্যের ধরন",
       "আগের লেখা",
       "নতুন লেখা"
     ].forEach((heading) => {
@@ -531,7 +531,7 @@ async function loadCorrectionHistory() {
       }
 
       const fieldText = proposal
-        ? proposal.field_name === "translation" ? "বাংলা অনুবাদ" : "Footnotes"
+        ? proposal.field_name === "translation" ? "বাংলা অনুবাদ" : "ব্যাখ্যামূলক টীকা"
         : "—";
 
       [
@@ -551,7 +551,7 @@ async function loadCorrectionHistory() {
     table.appendChild(tbody);
     historyList.replaceChildren(table);
   } catch (error) {
-    historyList.textContent = "Correction History লোড করা যায়নি: " + error.message;
+    historyList.textContent = "সংশোধনের ইতিহাস আনা যায়নি: " + error.message;
   }
 }
 

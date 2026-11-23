@@ -13,7 +13,7 @@ const savedTheme = localStorage.getItem("quran-explorer-theme");
 function applyTheme(theme) {
   const isDark = theme === "dark";
   document.body.classList.toggle("dark-theme", isDark);
-  themeToggle.textContent = isDark ? "Light Mode" : "Dark Mode";
+  themeToggle.textContent = isDark ? "হালকা মোড" : "গাঢ় মোড";
   document.documentElement.style.colorScheme = isDark ? "dark" : "light";
 }
 
@@ -69,6 +69,7 @@ const topicTitleInput = document.getElementById("topicTitleInput");
 const topicCategorySelect = document.getElementById("topicCategorySelect");
 const topicSearchInput = document.getElementById("topicSearchInput");
 const topicBackButton = document.getElementById("topicBackButton");
+const selectedTopicCategoryLabel = document.getElementById("selectedTopicCategoryLabel");
 const createTopicButton = document.getElementById("createTopicButton");
 const topicAyahSelect = document.getElementById("topicAyahSelect");
 const topicSurahSelect = document.getElementById("topicSurahSelect");
@@ -396,7 +397,7 @@ async function loadSurahList() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       data = await response.json();
     }
-    if (!data) throw new Error("সূরার তালিকার Offline Data পাওয়া যায়নি।");
+    if (!data) throw new Error("সূরার তালিকার স্থানীয় তথ্য পাওয়া যায়নি।");
 
     if (!Array.isArray(data.surahs) || data.surahs.length !== 114) {
       throw new Error("সূরার তালিকা সঠিক নয়।");
@@ -586,7 +587,7 @@ function createAyahCard(ayah) {
     if (isSurahEditing) {
       content.appendChild(
         createEditField(
-          "Footnotes (HTML সমর্থিত)",
+          "ব্যাখ্যামূলক টীকা (লেখার বিন্যাস সমর্থিত)",
           ayah.footnotes,
           ayah._sourceAya,
           "footnotes",
@@ -624,7 +625,7 @@ function createSurahEditToolbar() {
   const editButton = document.createElement("button");
   editButton.type = "button";
   editButton.className = "surah-edit-button";
-  editButton.textContent = isSurahEditing ? "সম্পাদনা চালু আছে" : "Edit";
+  editButton.textContent = isSurahEditing ? "সম্পাদনা চালু আছে" : "সম্পাদনা";
 
   editButton.addEventListener("click", () => {
     if (!isSurahEditing) {
@@ -639,14 +640,14 @@ function createSurahEditToolbar() {
     const saveButton = document.createElement("button");
     saveButton.type = "button";
     saveButton.className = "surah-save-button";
-    saveButton.textContent = "Save & Publish";
+    saveButton.textContent = "সংরক্ষণ ও প্রকাশ";
     saveButton.addEventListener("click", saveCurrentSurah);
     toolbar.appendChild(saveButton);
 
     const cancelButton = document.createElement("button");
     cancelButton.type = "button";
     cancelButton.className = "surah-cancel-button";
-    cancelButton.textContent = "Cancel";
+    cancelButton.textContent = "বাতিল";
     cancelButton.addEventListener("click", () => {
       isSurahEditing = false;
       renderCurrentSurah();
@@ -738,7 +739,7 @@ if (!isSurahEditing && currentStartAyah > 1) {
 
 const count = document.createElement("p");
   count.textContent = currentSurahNumber === 1 && isSurahEditing
-    ? "৭ আয়াত (Admin Edit-এ মূল ৬টি QuranEnc রেকর্ড)"
+    ? "৭টি আয়াত (প্রশাসনিক সম্পাদনায় মূল ৬টি কুরআনএনক রেকর্ড)"
     : currentStartAyah > 1 && !isSurahEditing
       ? `আয়াত ${currentStartAyah.toLocaleString("bn-BD")}–${surah.total_ayahs.toLocaleString("bn-BD")}`
       : `${displayAyahs.length.toLocaleString("bn-BD")} আয়াত`;
@@ -774,7 +775,7 @@ const count = document.createElement("p");
     if (fatihaIntro && isSurahEditing) {
       content.appendChild(
         createEditField(
-          "প্রথম আয়াতের Footnotes (HTML সমর্থিত)",
+          "প্রথম আয়াতের ব্যাখ্যামূলক টীকা (লেখার বিন্যাস সমর্থিত)",
           fatihaIntro.footnotes,
           fatihaIntro._sourceAya,
           "footnotes",
@@ -845,7 +846,7 @@ async function openSurah(surahNumber, startAyah = 1) {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       data = await response.json();
     }
-    if (!data) throw new Error("সূরার Offline Data পাওয়া যায়নি।");
+    if (!data) throw new Error("সূরার স্থানীয় তথ্য পাওয়া যায়নি।");
 
     if (
       data.metadata.surah !== surahNumber ||
@@ -886,7 +887,7 @@ async function openSurah(surahNumber, startAyah = 1) {
         }
       } catch (correctionError) {
         console.warn("Approved corrections could not be loaded:", correctionError);
-        showMessage("অনলাইন সংশোধন লোড করা যায়নি; স্থানীয় অনুবাদ দেখানো হচ্ছে।", true);
+        showMessage("অনলাইন সংশোধন আনা যায়নি; সংরক্ষিত অনুবাদ দেখানো হচ্ছে।", true);
       }
     }
 
@@ -901,7 +902,7 @@ async function openSurah(surahNumber, startAyah = 1) {
 
 async function saveCurrentSurah() {
   if (!isQuranAdmin || !currentSurahData || !isSurahEditing || !supabaseClient) {
-    showMessage("Admin অনুমতি ছাড়া Save করা যাবে না।", true);
+    showMessage("প্রশাসকের অনুমতি ছাড়া সংরক্ষণ করা যাবে না।", true);
     return;
   }
 
@@ -921,7 +922,7 @@ async function saveCurrentSurah() {
 
   for (const field of changes) {
     if (!field.value.trim()) {
-      showMessage("অনুবাদ বা Footnotes খালি রাখা যাবে না।", true);
+      showMessage("অনুবাদ বা পাদটীকা ফাঁকা রাখা যাবে না।", true);
       field.focus();
       return;
     }
@@ -930,7 +931,7 @@ async function saveCurrentSurah() {
   const saveButton = surahHeader.querySelector(".surah-save-button");
   if (saveButton) {
     saveButton.disabled = true;
-    saveButton.textContent = "Saving...";
+    saveButton.textContent = "সংরক্ষণ করা হচ্ছে...";
   }
 
   let savedCount = 0;
@@ -973,7 +974,7 @@ async function saveCurrentSurah() {
       );
       if (saveButton) {
         saveButton.disabled = false;
-        saveButton.textContent = "আবার Save করুন";
+        saveButton.textContent = "আবার সংরক্ষণ করুন";
       }
       return;
     }
@@ -1162,8 +1163,8 @@ function renderTopicCategoryCards() {
       );
       renameButton.disabled = items.length === 0;
       renameButton.title = items.length
-        ? "এই Category-র নাম পরিবর্তন করুন"
-        : "এই Category-তে কোনো বিষয় নেই";
+        ? "এই বিষয় শ্রেণির নাম পরিবর্তন করুন"
+        : "এই বিষয় শ্রেণিতে কোনো বিষয় নেই";
 
       card.appendChild(renameButton);
     }
@@ -1177,7 +1178,7 @@ function renderTopicCards(items) {
   if (!items.length) {
     const empty = document.createElement("p");
     empty.className = "loading-message";
-    empty.textContent = "এই Category-তে এখনো কোনো বিষয় যোগ করা হয়নি।";
+    empty.textContent = "এই বিষয় শ্রেণিতে এখনো কোনো বিষয় যোগ করা হয়নি।";
     topicsList.appendChild(empty);
     return;
   }
@@ -1189,10 +1190,6 @@ function renderTopicCards(items) {
 
     const card = document.createElement("article");
     card.className = "topic-card topic-browser-card";
-
-    const category = document.createElement("p");
-    category.className = "topic-card-category";
-    category.textContent = topic.category || "অন্যান্য বিষয়";
 
     const heading = document.createElement("h3");
     heading.textContent = topic.title;
@@ -1207,14 +1204,14 @@ function renderTopicCards(items) {
       renderTopicsList();
     });
 
-    card.append(category, heading, count, openButton);
+    card.append(heading, count, openButton);
 
     if (isQuranAdmin) {
       const actions = document.createElement("div");
       actions.className = "topic-actions";
       actions.append(
         makeTopicActionButton("নাম পরিবর্তন", "secondary-button", () => renameQuranTopic(topic)),
-        makeTopicActionButton("Delete", "danger-button", () => deleteQuranTopic(topic))
+        makeTopicActionButton("মুছে ফেলুন", "danger-button", () => deleteQuranTopic(topic))
       );
       card.appendChild(actions);
     }
@@ -1343,7 +1340,7 @@ function renderTopicDetail(topic) {
     actions.className = "topic-actions topic-detail-actions";
     actions.append(
       makeTopicActionButton("নাম পরিবর্তন", "secondary-button", () => renameQuranTopic(topic)),
-      makeTopicActionButton("Delete", "danger-button", () => deleteQuranTopic(topic))
+      makeTopicActionButton("মুছে ফেলুন", "danger-button", () => deleteQuranTopic(topic))
     );
     card.appendChild(actions);
   }
@@ -1413,7 +1410,7 @@ function renderTopicDetail(topic) {
 
       if (isQuranAdmin) {
         row.appendChild(makeTopicActionButton(
-          "Remove",
+          "সরিয়ে ফেলুন",
           "danger-button topic-ayah-remove",
           () => removeTopicAyah(item)
         ));
@@ -1431,13 +1428,20 @@ function renderTopicDetail(topic) {
 function renderTopicsList() {
   topicsList.replaceChildren();
 
+  selectedTopicCategoryLabel.hidden =
+    topicBrowseLevel !== "topics" || Boolean(topicSearchQuery);
+  selectedTopicCategoryLabel.textContent =
+    topicBrowseLevel === "topics" && !topicSearchQuery
+      ? `বিষয় শ্রেণি: ${selectedTopicCategory || ""}`
+      : "";
+
   topicBackButton.hidden =
     topicBrowseLevel === "categories" && !topicSearchQuery;
 
   topicBackButton.textContent =
     topicBrowseLevel === "detail" ? "← বিষয় তালিকায় ফিরুন" :
-    topicBrowseLevel === "topics" ? "← Category-তে ফিরুন" :
-    "← সব Category";
+    topicBrowseLevel === "topics" ? "← বিষয় শ্রেণিতে ফিরুন" :
+    "← সব বিষয় শ্রেণি";
 
   if (!quranTopics.length) {
     topicsList.className = "topics-list";
@@ -1498,7 +1502,7 @@ async function openTopicAyah(item) {
   );
 
   if (!targetCard) {
-    showMessage("নির্বাচিত আয়াতটি Reader-এ পাওয়া যায়নি।", true);
+    showMessage("নির্বাচিত আয়াতটি পাঠ অংশে পাওয়া যায়নি।", true);
     return;
   }
 
@@ -1534,17 +1538,17 @@ async function renameQuranCategory(category, items) {
   if (!isQuranAdmin || !supabaseClient) return;
 
   if (!items.length) {
-    setTopicsMessage("এই Category-তে কোনো বিষয় নেই। তাই নাম পরিবর্তন করা যাচ্ছে না।", true);
+    setTopicsMessage("এই বিষয় শ্রেণিতে কোনো বিষয় নেই। তাই নাম পরিবর্তন করা যাচ্ছে না।", true);
     return;
   }
 
-  const response = window.prompt("নতুন Category-র নাম লিখুন:", category.name);
+  const response = window.prompt("নতুন বিষয় শ্রেণির নাম লিখুন:", category.name);
   if (response === null) return;
 
   const newName = response.trim();
 
   if (!newName) {
-    setTopicsMessage("Category-র নাম খালি রাখা যাবে না।", true);
+    setTopicsMessage("বিষয় শ্রেণির নাম ফাঁকা রাখা যাবে না।", true);
     return;
   }
 
@@ -1575,10 +1579,10 @@ async function renameQuranCategory(category, items) {
     selectedTopicCategory = newName;
     topicBrowseLevel = "topics";
     renderTopicsList();
-    setTopicsMessage("Category-র নাম সফলভাবে পরিবর্তন হয়েছে।");
+    setTopicsMessage("বিষয় শ্রেণির নাম সফলভাবে পরিবর্তন হয়েছে।");
   } catch (error) {
     console.error("Category rename failed:", error);
-    setTopicsMessage("Category-র নাম পরিবর্তন করা যায়নি।", true);
+    setTopicsMessage("বিষয় শ্রেণির নাম পরিবর্তন করা যায়নি।", true);
   }
 }
 
@@ -1672,7 +1676,7 @@ async function addAyahToTopic() {
       await supabaseClient.auth.getUser();
 
     if (userError || !userData.user) {
-      throw userError || new Error("Admin session পাওয়া যায়নি।");
+      throw userError || new Error("প্রশাসকের অধিবেশন পাওয়া যায়নি।");
     }
 
     const { error } = await supabaseClient
@@ -1697,7 +1701,7 @@ async function addAyahToTopic() {
     setTopicsMessage(
       error.code === "23505"
         ? "এই আয়াতটি এই বিষয়ে আগেই যোগ করা হয়েছে।"
-        : "আয়াত যোগ করা যায়নি। Admin Login ও ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+        : "আয়াত যোগ করা যায়নি। প্রশাসক হিসেবে প্রবেশ এবং ইন্টারনেট সংযোগ পরীক্ষা করুন।",
       true
     );
   } finally {
@@ -1728,7 +1732,7 @@ async function createQuranTopic() {
       await supabaseClient.auth.getUser();
 
     if (userError || !userData.user) {
-      throw userError || new Error("Admin session পাওয়া যায়নি।");
+      throw userError || new Error("প্রশাসকের অধিবেশন পাওয়া যায়নি।");
     }
 
     const { error } = await supabaseClient
@@ -1749,7 +1753,7 @@ async function createQuranTopic() {
     setTopicsMessage(
       error.code === "23505"
         ? "এই নামে একটি বিষয় আগে থেকেই রয়েছে।"
-        : "বিষয় তৈরি করা যায়নি। Admin Login ও ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+        : "বিষয় তৈরি করা যায়নি। প্রশাসক হিসেবে প্রবেশ এবং ইন্টারনেট সংযোগ পরীক্ষা করুন।",
       true
     );
   } finally {
@@ -1761,7 +1765,7 @@ createTopicButton.addEventListener("click", createQuranTopic);
 
 async function loadTopics() {
   if (!supabaseClient) {
-    setTopicsMessage("Supabase সংযোগ পাওয়া যায়নি।", true);
+    setTopicsMessage("সুপাবেজ সংযোগ পাওয়া যায়নি।", true);
     return;
   }
 
@@ -1989,12 +1993,12 @@ adminLoginPanel.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (!supabaseClient) {
-    adminLoginMessage.textContent = "Supabase সংযোগ পাওয়া যায়নি।";
+    adminLoginMessage.textContent = "সুপাবেজ সংযোগ পাওয়া যায়নি।";
     return;
   }
 
   adminLoginSubmit.disabled = true;
-  adminLoginMessage.textContent = "Login যাচাই হচ্ছে...";
+  adminLoginMessage.textContent = "প্রবেশের তথ্য যাচাই করা হচ্ছে...";
 
   try {
     const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -2008,17 +2012,17 @@ adminLoginPanel.addEventListener("submit", async (event) => {
 
     if (!allowed) {
       await supabaseClient.auth.signOut();
-      throw new Error("এই Account-এর Quran Admin অনুমতি নেই।");
+      throw new Error("এই অ্যাকাউন্টে কুরআন প্রশাসকের অনুমতি নেই।");
     }
 
     isQuranAdmin = true;
     adminPassword.value = "";
     adminLoginMessage.textContent = "";
     updateAdminUI();
-    showMessage("Admin Login সফল হয়েছে।");
+    showMessage("প্রশাসক হিসেবে সফলভাবে প্রবেশ করেছেন।");
   } catch (error) {
     console.error("Admin login failed:", error);
-    adminLoginMessage.textContent = error.message || "Login ব্যর্থ হয়েছে।";
+    adminLoginMessage.textContent = error.message || "প্রবেশ করা যায়নি।";
   } finally {
     adminLoginSubmit.disabled = false;
   }
@@ -2028,7 +2032,7 @@ adminLogout.addEventListener("click", async () => {
   if (supabaseClient) {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
-      showMessage("Logout করা যায়নি: " + error.message, true);
+      showMessage("প্রস্থান করা যায়নি: " + error.message, true);
       return;
     }
   }
@@ -2036,13 +2040,13 @@ adminLogout.addEventListener("click", async () => {
   isQuranAdmin = false;
   isSurahEditing = false;
   updateAdminUI();
-  showMessage("Admin Logout সম্পন্ন হয়েছে।");
+  showMessage("প্রশাসক হিসেবে প্রস্থান সম্পন্ন হয়েছে।");
 });
 
 async function restoreAdminSession() {
   if (!supabaseClient) {
     adminLoginToggle.disabled = true;
-    adminLoginToggle.textContent = "Login unavailable";
+    adminLoginToggle.textContent = "প্রবেশের ব্যবস্থা পাওয়া যাচ্ছে না";
     return;
   }
 

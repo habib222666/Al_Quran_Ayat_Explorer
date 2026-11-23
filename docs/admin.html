@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#075c46">
-  <title>Admin Dashboard — Al-Quran & Ayat Explorer</title>
+  <title>প্রশাসনিক প্যানেল — আল-কুরআন ও আয়াত অনুসন্ধান</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -12,22 +12,22 @@
   <div id="app">
     <header class="app-header">
       <div class="brand">
-        <h1>Admin Dashboard</h1>
+        <h1>প্রশাসনিক প্যানেল</h1>
         <p>আল কুরআন এর আয়াত অনুসন্ধান ও বিষয়ভিত্তিক অধ্যয়ন</p>
       </div>
       <div class="admin-header-actions">
-        <a class="admin-header-link" href="index.html">Quran Reader</a>
-        <button id="adminThemeToggle" type="button">Dark Mode</button>
+        <a class="admin-header-link" href="index.html">কুরআন পাঠ</a>
+        <button id="adminThemeToggle" type="button">গাঢ় মোড</button>
       </div>
     </header>
 
     <main id="mainContent" class="admin-main">
       <section id="adminLoginSection" class="admin-panel">
-        <h2>Admin Login</h2>
-        <p>অনুমোদিত Admin Account দিয়ে প্রবেশ করুন।</p>
+        <h2>প্রশাসকের প্রবেশ</h2>
+        <p>অনুমোদিত প্রশাসক অ্যাকাউন্ট দিয়ে প্রবেশ করুন।</p>
 
         <form id="adminLoginForm">
-          <label for="adminEmail">Email Address</label>
+          <label for="adminEmail">ইমেইল ঠিকানা</label>
           <input
             id="adminEmail"
             type="email"
@@ -35,7 +35,7 @@
             required
           >
 
-          <label for="adminPassword">Password</label>
+          <label for="adminPassword">পাসওয়ার্ড</label>
           <input
             id="adminPassword"
             type="password"
@@ -43,7 +43,7 @@
             required
           >
 
-          <button id="adminLoginButton" type="submit">Login</button>
+          <button id="adminLoginButton" type="submit">প্রবেশ করুন</button>
         </form>
 
         <p id="adminLoginMessage" class="admin-message" role="status"></p>
@@ -52,11 +52,11 @@
       <section id="adminDashboard" class="admin-panel" hidden>
         <div class="admin-dashboard-heading">
           <div>
-            <h2>Correction Editor</h2>
+            <h2>সংশোধনা সম্পাদনা</h2>
             <p id="adminAccountInfo"></p>
           </div>
           <button id="adminLogoutButton" class="admin-secondary-button" type="button">
-            Logout
+            প্রস্থান
           </button>
         </div>
 
@@ -86,7 +86,7 @@
             disabled
           ></textarea>
 
-          <label for="adminFootnotes">ব্যাখ্যা ও Footnotes</label>
+          <label for="adminFootnotes">ব্যাখ্যা ও পাদটীকা</label>
           <textarea
             id="adminFootnotes"
             rows="9"
@@ -103,7 +103,7 @@
           ></textarea>
 
           <button id="adminPublishButton" type="button" disabled>
-            Save & Publish
+            সংরক্ষণ ও প্রকাশ
           </button>
 
           <p id="adminEditorMessage" class="admin-message" role="status"></p>
@@ -111,20 +111,20 @@
 
         <section class="admin-history-section">
           <div class="admin-history-heading">
-            <h3>Correction History</h3>
+            <h3>সংশোধনের ইতিহাস</h3>
             <button id="adminRefreshHistory" class="admin-secondary-button" type="button">
-              Refresh
+              হালনাগাদ
             </button>
           </div>
           <div id="adminHistoryList">
-            <p>History লোড হয়নি।</p>
+            <p>ইতিহাস এখনো লোড হয়নি।</p>
           </div>
         </section>
       </section>
     </main>
 
     <footer class="app-footer">
-      <p>Al-Quran & Ayat Explorer — Administration</p>
+      <p>আল-কুরআন ও আয়াত অনুসন্ধান — প্রশাসন</p>
     </footer>
   </div>
 
