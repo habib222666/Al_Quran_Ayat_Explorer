@@ -240,6 +240,8 @@ function renderParaList(query = "") {
   const isNumericQuery = /^\d+$/.test(englishQuery);
 
   const filtered = paraIndex.filter((para) => {
+    if (!normalizedQuery) return true;
+
     return isNumericQuery
       ? Number(para.para) === Number(englishQuery)
       : false;
