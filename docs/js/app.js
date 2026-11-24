@@ -59,6 +59,12 @@ const adminLoginMessage = document.getElementById("adminLoginMessage");
 const homeView = document.getElementById("homeView");
 const quranSection = document.getElementById("quranSection");
 const topicsSection = document.getElementById("topicsSection");
+const asmaulHusnaSection = document.getElementById("asmaulHusnaSection");
+const openAsmaulHusnaCard = document.getElementById("openAsmaulHusnaCard");
+const backHomeFromAsmaulHusna = document.getElementById("backHomeFromAsmaulHusna");
+const asmaulHusnaSearch = document.getElementById("asmaulHusnaSearch");
+const asmaulHusnaMessage = document.getElementById("asmaulHusnaMessage");
+const asmaulHusnaList = document.getElementById("asmaulHusnaList");
 const openQuranCard = document.getElementById("openQuranCard");
 const openTopicsCard = document.getElementById("openTopicsCard");
 const backHomeFromQuran = document.getElementById("backHomeFromQuran");
@@ -995,6 +1001,7 @@ function showHomeView() {
   surahBrowser.hidden = false;
   quranSection.hidden = true;
   topicsSection.hidden = true;
+  asmaulHusnaSection.hidden = true;
   homeView.hidden = false;
   currentSurahNumber = null;
   currentSurahData = null;
@@ -1005,6 +1012,7 @@ function showHomeView() {
 function showQuranHome() {
   homeView.hidden = true;
   topicsSection.hidden = true;
+  asmaulHusnaSection.hidden = true;
   quranSection.hidden = false;
   showSurahList();
 }
@@ -1904,6 +1912,111 @@ async function loadTopics() {
   renderTopicsList();
 }
 
+
+let asmaulHusnaRows = [];
+
+function setAsmaulHusnaMessage(message, isError = false) {
+  asmaulHusnaMessage.textContent = message;
+  asmaulHusnaMessage.classList.toggle("error-message", isError);
+}
+
+function renderAsmaulHusna() {
+  const query = asmaulHusnaSearch.value.trim().toLocaleLowerCase();
+  const filteredRows = asmaulHusnaRows.filter((row) => {
+    const searchable = [
+      row.arabic_name,
+      row.bangla_pronunciation,
+      row.meaning_bn,
+      row.english_name
+    ].filter(Boolean).join(" ").toLocaleLowerCase();
+    return searchable.includes(query);
+  });
+
+  asmaulHusnaList.replaceChildren();
+
+  if (!filteredRows.length) {
+    setAsmaulHusnaMessage(
+      query ? "আপনার অনুসন্ধানের সঙ্গে মেলে এমন কোনো নাম পাওয়া যায়নি।" : "কোনো নাম পাওয়া যায়নি।"
+    );
+    return;
+  }
+
+  setAsmaulHusnaMessage(
+    `${filteredRows.length.toLocaleString("bn-BD")}টি নাম দেখানো হচ্ছে`
+  );
+
+  filteredRows.forEach((row, index) => {
+    const card = document.createElement("article");
+    card.className = "asmaul-name-card";
+
+    const number = document.createElement("span");
+    number.className = "asmaul-name-number";
+    number.textContent = Number(row.serial_no) > 0
+      ? Number(row.serial_no).toLocaleString("bn-BD")
+      : (index + 1).toLocaleString("bn-BD");
+
+    const arabic = document.createElement("h3");
+    arabic.className = "asmaul-name-arabic";
+    arabic.dir = "rtl";
+    arabic.textContent = row.arabic_name || "";
+
+    const english = document.createElement("p");
+    english.className = "asmaul-name-english";
+    english.textContent = row.english_name || "";
+
+    const pronunciation = document.createElement("p");
+    pronunciation.className = "asmaul-name-pronunciation";
+    pronunciation.textContent = row.bangla_pronunciation || "";
+
+    const meaning = document.createElement("p");
+    meaning.className = "asmaul-name-meaning";
+    meaning.textContent = row.meaning_bn || "বাংলা অর্থ যোগ করা হয়নি";
+
+    card.append(number, arabic, english, pronunciation, meaning);
+    asmaulHusnaList.append(card);
+  });
+}
+
+async function loadAsmaulHusna() {
+  if (!supabaseClient) {
+    asmaulHusnaList.replaceChildren();
+    setAsmaulHusnaMessage("সুপাবেজ সংযোগ পাওয়া যায়নি।", true);
+    return;
+  }
+
+  asmaulHusnaList.replaceChildren();
+  setAsmaulHusnaMessage("আসমাউল হুসনার নামগুলো লোড হচ্ছে...");
+
+  const { data, error } = await supabaseClient
+    .from("asmaul_husna")
+    .select("serial_no,arabic_name,bangla_pronunciation,meaning_bn,english_name")
+    .order("serial_no", { ascending: true });
+
+  if (error) {
+    console.error("Asmaul Husna loading failed:", error);
+    setAsmaulHusnaMessage(
+      "নামগুলো লোড করা যায়নি। Supabase table ও internet connection পরীক্ষা করুন।",
+      true
+    );
+    return;
+  }
+
+  asmaulHusnaRows = data || [];
+  renderAsmaulHusna();
+}
+
+function showAsmaulHusnaHome() {
+  homeView.hidden = true;
+  quranSection.hidden = true;
+  topicsSection.hidden = true;
+  asmaulHusnaSection.hidden = false;
+  isSurahEditing = false;
+  surahReader.hidden = true;
+  asmaulHusnaSearch.value = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  loadAsmaulHusna();
+}
+
 function showTopicsHome() {
   selectedTopicCategory = null;
   selectedQuranTopicId = null;
@@ -1914,6 +2027,7 @@ function showTopicsHome() {
   homeView.hidden = true;
   quranSection.hidden = true;
   topicsSection.hidden = false;
+  asmaulHusnaSection.hidden = true;
   isSurahEditing = false;
   surahReader.hidden = true;
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1921,6 +2035,9 @@ function showTopicsHome() {
 }
 
 openQuranCard.addEventListener("click", showQuranHome);
+openAsmaulHusnaCard.addEventListener("click", showAsmaulHusnaHome);
+backHomeFromAsmaulHusna.addEventListener("click", showHomeView);
+asmaulHusnaSearch.addEventListener("input", renderAsmaulHusna);
 openTopicsCard.addEventListener("click", showTopicsHome);
 backHomeFromQuran.addEventListener("click", showHomeView);
 backHomeFromReader.addEventListener("click", showHomeView);

@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#075c46">
   <meta name="description" content="আল কুরআনের ১১৪টি সূরা, আরবি আয়াত, বাংলা অনুবাদ ও ফুটনোট">
   <title>আল-কুরআন ও আয়াত অনুসন্ধান</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -38,21 +41,91 @@
 
     <main id="mainContent">
       <section id="homeView">
-        <section class="welcome-section">
-          <h2>الْقُرْآنُ الْكَرِيمُ</h2>
-          <p>পবিত্র আল-কুরআনের ১১৪টি সূরা ও ৬,২৩৬টি আয়াত</p>
+        <section class="welcome-section heritage-frame">
+          <span class="heritage-corner heritage-corner-top-left" aria-hidden="true">۞</span>
+          <span class="heritage-corner heritage-corner-top-right" aria-hidden="true">۞</span>
+          <div class="mihrab-heading">
+            <span class="heritage-taawwudh" lang="ar" dir="rtl">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</span>
+            <span class="heritage-eyebrow" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+            <h2 lang="ar" dir="rtl">الْقُرْآنُ الْكَرِيمُ</h2>
+            <p>পবিত্র আল-কুরআনের ১১৪টি সূরা ও ৬,২৩৬টি আয়াত</p>
+            <span class="heritage-divider" aria-hidden="true">✦ ━━━━━━━━━ ✦</span>
+          </div>
+          <span class="heritage-corner heritage-corner-bottom-left" aria-hidden="true">۞</span>
+          <span class="heritage-corner heritage-corner-bottom-right" aria-hidden="true">۞</span>
         </section>
 
         <div class="home-card-grid">
           <button id="openQuranCard" class="home-card" type="button">
-            <span class="home-card-icon">📖</span>
+            <span class="home-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="সোনালি নকশার রেহালের উপর খোলা কুরআন">
+<defs>
+ <linearGradient id="qCover" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f9e8b5"/><stop offset=".55" stop-color="#d4ad58"/><stop offset="1" stop-color="#936322"/></linearGradient>
+ <linearGradient id="qPage" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffef5"/><stop offset="1" stop-color="#e8d6a9"/></linearGradient>
+ <linearGradient id="qWood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a86f3e"/><stop offset="1" stop-color="#57351f"/></linearGradient>
+ <filter id="qShadow"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#49351b" flood-opacity=".25"/></filter>
+</defs>
+<g filter="url(#qShadow)">
+ <path d="M89 94 22 132l-9-6 65-43M91 94l67 38 9-6-65-43" fill="url(#qWood)" stroke="#59371f" stroke-width="2.5" stroke-linejoin="round"/>
+ <path d="m89 94-11 43h24L91 94" fill="#89572f" stroke="#59371f" stroke-width="2"/>
+ <path d="M89 37Q54 13 15 27l12 64q32-13 62 12Z" fill="url(#qPage)" stroke="#a47b36" stroke-width="2.5"/>
+ <path d="M91 37q35-24 74-10l-12 64q-32-13-62 12Z" fill="url(#qPage)" stroke="#a47b36" stroke-width="2.5"/>
+ <path d="M90 37v66" stroke="#9a7438" stroke-width="2.5"/>
+ <path d="M22 33q27-9 56 9M25 43q25-8 51 8M27 53q23-7 47 7M29 63q20-6 43 6M158 33q-27-9-56 9M155 43q-25-8-51 8M153 53q-23-7-47 7M151 63q-20-6-43 6" fill="none" stroke="#b99a5b" stroke-width="1.4" stroke-linecap="round"/>
+ <path d="M89 31Q53 7 11 21l4 8Q53 17 89 43M91 31q36-24 78-10l-4 8q-38-12-74 14" fill="none" stroke="url(#qCover)" stroke-width="5"/>
+ <path d="M89 49 78 61l11 12 11-12Z" fill="none" stroke="#b18a43" stroke-width="1.6"/>
+ <path d="m89 54 6 7-6 7-6-7Z" fill="#c49a45"/>
+ <path d="M17 28 27 91M163 28l-10 63" stroke="#c49a45" stroke-width="2"/>
+</g>
+<path d="M8 139h164" stroke="#a77d37" stroke-width="2" stroke-linecap="round"/>
+<path d="m90 119 5 5-5 5-5-5Z" fill="#c49a45"/>
+</svg>
+            </span>
             <strong>অর্থসহ আল-কুরআন</strong>
-            <span>আরবি আয়াত, বাংলা অর্থ, ব্যাখ্যা ও সূরাভিত্তিক পাঠ</span>
+            <span>আরবি আয়াত, বাংলা অর্থ, ব্যাখ্যা ও সূরা ভিত্তিক পাঠ</span>
+            <span class="home-card-action">পড়ুন →</span>
           </button>
           <button id="openTopicsCard" class="home-card" type="button">
-            <span class="home-card-icon">📚</span>
+            <span class="home-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="সোনালি অলংকরণযুক্ত ইসলামী গ্রন্থ">
+<defs>
+ <linearGradient id="bGreen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#39704c"/><stop offset=".5" stop-color="#17452f"/><stop offset="1" stop-color="#0b2d20"/></linearGradient>
+ <linearGradient id="bGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8e5a8"/><stop offset=".5" stop-color="#d2a94e"/><stop offset="1" stop-color="#926521"/></linearGradient>
+ <linearGradient id="bPage" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffdf2"/><stop offset="1" stop-color="#dfc995"/></linearGradient>
+ <filter id="bShadow"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#49351b" flood-opacity=".24"/></filter>
+</defs>
+<g filter="url(#bShadow)" stroke="#765323" stroke-width="1.5" stroke-linejoin="round">
+ <path d="M18 99h104v23H18q-5 0-5-5v-13q0-5 5-5Z" fill="url(#bGreen)"/>
+ <path d="M13 105h109v5H13M13 116h109v3H13" fill="none" stroke="url(#bGold)" stroke-width="1.5"/>
+ <path d="M28 73h100v24H28q-5 0-5-5V78q0-5 5-5Z" fill="url(#bGreen)"/>
+ <path d="M23 79h105v4H23M23 91h105v3H23" fill="none" stroke="url(#bGold)"/>
+ <path d="M38 47h91v25H38q-5 0-5-5V52q0-5 5-5Z" fill="url(#bGreen)"/>
+ <path d="M33 53h96v4H33M33 65h96v3H33" fill="none" stroke="url(#bGold)"/>
+ <path d="M73 19q0-8 8-8h61q8 0 8 8v104q0 7-8 7H73Z" fill="url(#bGreen)"/>
+ <path d="M82 18h59v103H82Z" fill="none" stroke="url(#bGold)" stroke-width="2"/>
+ <path d="M88 25h47v89H88Z" fill="none" stroke="url(#bGold)" stroke-width="1.2"/>
+</g>
+<g fill="none" stroke="url(#bGold)" stroke-width="2" stroke-linejoin="round">
+ <path d="m111 35 9 11-9 11-9-11Z"/>
+ <path d="m111 40 5 6-5 6-5-6Z"/>
+ <path d="M111 61v39M96 80h30"/>
+ <path d="m111 69 5 6-5 6-5-6Z M111 91l5 6-5 6-5-6Z"/>
+ <path d="M43 54h37M43 66h37M30 80h37M30 92h37M24 106h37M24 117h37"/>
+ <path d="m54 52 4 7-4 7-4-7Z M54 78l4 7-4 7-4-7Z M48 104l4 7-4 7-4-7Z"/>
+</g>
+<path d="M12 128h143" stroke="#a77d37" stroke-width="2" stroke-linecap="round"/>
+<path d="m111 14 4 4-4 4-4-4Z" fill="#e5c36f"/>
+</svg>
+            </span>
             <strong>বিষয়ভিত্তিক আল-কুরআন</strong>
             <span>বিভিন্ন বিষয় অনুযায়ী কুরআনের আয়াত অধ্যয়ন</span>
+            <span class="home-card-action">অনুসন্ধান করুন →</span>
+          </button>
+          <button id="openAsmaulHusnaCard" class="home-card" type="button">
+            <span class="home-card-icon asmaul-card-icon" aria-hidden="true">الله</span>
+            <strong>আসমাউল হুসনা</strong>
+            <span>আল্লাহর ৯৯টি সুন্দর নাম, বাংলা উচ্চারণ ও অর্থ</span>
+            <span class="home-card-action">জানুন →</span>
           </button>
         </div>
       </section>
@@ -180,6 +253,19 @@
           <p class="loading-message">বিষয়গুলো লোড হচ্ছে...</p>
         </div>
       </section>
+    <section id="asmaulHusnaSection" class="topics-section asmaul-husna-section" hidden>
+      <button id="backHomeFromAsmaulHusna" class="section-home-button" type="button">← মূল পাতায় ফিরুন</button>
+      <div class="asmaul-heading">
+        <h2>আসমাউল হুসনা</h2>
+        <p>আল্লাহর ৯৯টি সুন্দর নাম, বাংলা উচ্চারণ ও অর্থ</p>
+      </div>
+      <label class="asmaul-search-label" for="asmaulHusnaSearch">নাম বা অর্থ দিয়ে খুঁজুন</label>
+      <input id="asmaulHusnaSearch" class="asmaul-search" type="search"
+        placeholder="আরবি নাম, বাংলা উচ্চারণ, অর্থ বা English name লিখুন"
+        autocomplete="off">
+      <p id="asmaulHusnaMessage" class="asmaul-message" aria-live="polite">নামগুলো লোড হচ্ছে...</p>
+      <div id="asmaulHusnaList" class="asmaul-husna-list" aria-live="polite"></div>
+    </section>
     </main>
 
     <footer class="app-footer">

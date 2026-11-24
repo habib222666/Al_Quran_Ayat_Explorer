@@ -2198,3 +2198,2287 @@ body.dark-theme #surahReader .ayah-arabic.sajdah-ayah-highlight {
 body.dark-theme .selected-topic-category-label {
   color: #ffffff !important;
 }
+
+/* =====================================================
+   HERITAGE DASHBOARD DESIGN — 24 NOV 2026
+   Existing Quran, Topic and Admin styles are preserved
+   ===================================================== */
+
+:root {
+  --primary: #0d3b2e;
+  --primary-light: #f7f3e9;
+  --background: #fdfbf7;
+  --surface: #ffffff;
+  --text: #24382f;
+  --muted: #718078;
+  --border: #ede5d2;
+  --gold: #c59b27;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.07), transparent 55%),
+    var(--background);
+}
+
+.app-header {
+  position: relative;
+  min-height: 94px;
+  padding: 18px 6%;
+  background: #0d3b2e;
+  border-bottom: 4px solid #c59b27;
+  box-shadow: 0 5px 20px rgba(13, 59, 46, 0.13);
+}
+
+.brand h1 {
+  color: #fffaf0;
+  font-size: 25px;
+  letter-spacing: 0.2px;
+}
+
+.brand p {
+  color: #e3d9bd;
+}
+
+.header-actions {
+  gap: 10px;
+}
+
+.header-button,
+#themeToggle {
+  min-height: 39px;
+  padding: 8px 15px;
+  border: 1px solid rgba(212, 175, 55, 0.75);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fffaf0;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.header-button:hover,
+#themeToggle:hover {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: #e2c66e;
+}
+
+.admin-status {
+  color: #f0d98f;
+}
+
+#mainContent {
+  width: min(1120px, 90%);
+  margin: 42px auto 48px;
+}
+
+#homeView {
+  position: relative;
+}
+
+.welcome-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 275px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 28px;
+  margin-bottom: 34px;
+  border: 1px solid rgba(197, 155, 39, 0.65);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.07), transparent 58%),
+    linear-gradient(135deg, #134e3e, #0d3b2e 65%, #092d23);
+  box-shadow: 0 12px 32px rgba(13, 59, 46, 0.14);
+}
+
+.welcome-section::before,
+.welcome-section::after {
+  content: "✧";
+  position: absolute;
+  z-index: -1;
+  color: rgba(212, 175, 55, 0.55);
+  font-size: 105px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.welcome-section::before {
+  top: 12px;
+  left: 22px;
+}
+
+.welcome-section::after {
+  right: 22px;
+  bottom: 12px;
+}
+
+.welcome-section h2 {
+  margin: 0 0 15px;
+  color: #f3d989;
+  font-family: "Amiri", "Times New Roman", serif;
+  font-size: clamp(38px, 6vw, 58px);
+  font-weight: 700;
+  line-height: 1.5;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-section p {
+  margin: 0;
+  color: #f7f3e9;
+  font-size: 16px;
+}
+
+.home-card-grid {
+  max-width: 900px;
+  gap: 24px;
+  margin: 0 auto;
+}
+
+.home-card {
+  position: relative;
+  min-height: 220px;
+  padding: 30px 24px;
+  gap: 14px;
+  border: 1px solid #dfc987;
+  border-bottom: 4px solid #c59b27;
+  border-radius: 12px;
+  background: linear-gradient(155deg, #ffffff, #fdfbf7);
+  box-shadow: 0 6px 22px rgba(39, 57, 44, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-5px);
+  border-color: #c59b27;
+  box-shadow: 0 13px 30px rgba(13, 59, 46, 0.13);
+}
+
+.home-card-icon {
+  width: 66px;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e4d5a9;
+  border-radius: 50%;
+  background: #f7f3e9;
+  color: #0d3b2e;
+  font-size: 32px;
+}
+
+.home-card strong {
+  color: #0d3b2e;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.home-card > span:last-child {
+  max-width: 340px;
+  color: #718078;
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+
+.app-footer {
+  padding: 26px 20px;
+  border-top: 1px solid #ede5d2;
+  background: #f7f3e9;
+  color: #64746b;
+}
+
+.app-footer p {
+  margin: 4px 0;
+}
+
+.app-footer a {
+  color: #0d5a43;
+  font-weight: 600;
+  text-decoration-color: #c59b27;
+  text-underline-offset: 4px;
+}
+
+.app-footer a:hover {
+  color: #a67c1e;
+}
+
+/* Heritage dark theme */
+
+body.dark-theme {
+  --primary: #0d2d24;
+  --primary-light: #172820;
+  --background: #101914;
+  --surface: #19251e;
+  --text: #edf2e9;
+  --muted: #b0bcae;
+  --border: #39483a;
+  --gold: #d4af37;
+  background: #101914;
+}
+
+body.dark-theme .app-header {
+  background: #09291f;
+  border-bottom-color: #b9932e;
+}
+
+body.dark-theme .welcome-section {
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 58%),
+    linear-gradient(135deg, #173d30, #0b2c22 70%, #071f18);
+  border-color: #8d742f;
+}
+
+body.dark-theme .welcome-section h2 {
+  color: #f0d681;
+}
+
+body.dark-theme .welcome-section p {
+  color: #e0e7dc;
+}
+
+body.dark-theme .home-card {
+  background: linear-gradient(155deg, #1d3027, #17251e);
+  border-color: #806d39;
+  border-bottom-color: #c59b27;
+  color: #edf2e9;
+}
+
+body.dark-theme .home-card strong {
+  color: #f0d681;
+}
+
+body.dark-theme .home-card > span:last-child {
+  color: #bdc9bd;
+}
+
+body.dark-theme .home-card-icon {
+  background: #263b2e;
+  border-color: #806d39;
+  color: #f0d681;
+}
+
+body.dark-theme .app-footer {
+  background: #111d16;
+  border-top-color: #39483a;
+  color: #b0bcae;
+}
+
+body.dark-theme .app-footer a {
+  color: #e3c66e;
+}
+
+/* Responsive dashboard */
+
+@media (max-width: 700px) {
+  .app-header {
+    min-height: auto;
+    padding: 17px 5%;
+    gap: 14px;
+  }
+
+  .brand h1 {
+    font-size: 21px;
+  }
+
+  .brand p {
+    font-size: 12px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .welcome-section {
+    min-height: 225px;
+    padding: 42px 18px;
+  }
+
+  .welcome-section::before,
+  .welcome-section::after {
+    font-size: 65px;
+  }
+
+  .welcome-section::before {
+    top: 8px;
+    left: 10px;
+  }
+
+  .welcome-section::after {
+    right: 10px;
+    bottom: 8px;
+  }
+
+  .welcome-section p {
+    font-size: 14px;
+  }
+
+  .home-card-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .home-card {
+    min-height: 190px;
+    padding: 24px 18px;
+  }
+
+  #mainContent {
+    width: 92%;
+    margin-top: 25px;
+  }
+}
+
+
+/* Heritage frame and dashboard typography */
+
+body {
+  font-family: "Hind Siliguri", "SolaimanLipi", sans-serif;
+}
+
+.brand h1,
+.brand p,
+.home-card,
+.welcome-section p {
+  font-family: "Hind Siliguri", "SolaimanLipi", sans-serif;
+}
+
+.welcome-section.heritage-frame {
+  border: 1px solid #c59b27;
+  outline: 1px solid rgba(197, 155, 39, 0.28);
+  outline-offset: 5px;
+}
+
+.heritage-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #e8d49a;
+  font-family: "Amiri", serif;
+  font-size: 21px;
+  line-height: 1.8;
+}
+
+.heritage-divider {
+  display: block;
+  margin-top: 17px;
+  color: #d4af37;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.heritage-corner {
+  position: absolute;
+  color: rgba(212, 175, 55, 0.65);
+  font-family: "Amiri", serif;
+  font-size: 34px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.heritage-corner-top-left {
+  top: 12px;
+  left: 18px;
+}
+
+.heritage-corner-top-right {
+  top: 12px;
+  right: 18px;
+}
+
+.heritage-corner-bottom-left {
+  bottom: 12px;
+  left: 18px;
+}
+
+.heritage-corner-bottom-right {
+  right: 18px;
+  bottom: 12px;
+}
+
+.home-card-icon svg {
+  display: block;
+  width: 38px;
+  height: 38px;
+}
+
+.home-card:hover .home-card-icon {
+  border-color: #c59b27;
+  background: #f1e8cf;
+}
+
+body.dark-theme .heritage-eyebrow {
+  color: #f0d681;
+}
+
+body.dark-theme .heritage-corner {
+  color: rgba(240, 214, 129, 0.7);
+}
+
+body.dark-theme .home-card:hover .home-card-icon {
+  background: #354632;
+  border-color: #c59b27;
+}
+
+@media (max-width: 600px) {
+  .heritage-eyebrow {
+    font-size: 18px;
+  }
+
+  .heritage-corner {
+    font-size: 25px;
+  }
+
+  .heritage-corner-top-left,
+  .heritage-corner-bottom-left {
+    left: 9px;
+  }
+
+  .heritage-corner-top-right,
+  .heritage-corner-bottom-right {
+    right: 9px;
+  }
+
+  .heritage-divider {
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   ORNATE ISLAMIC HERITAGE DASHBOARD — 24 NOV 2026
+   ========================================================= */
+
+#homeView {
+  padding: 18px 18px 0;
+  border: 5px double #a98742;
+  border-radius: 28px;
+  background-color: #f8f2df;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(173,145,83,.13) 1px, transparent 1.5px),
+    repeating-linear-gradient(45deg, transparent 0 17px, rgba(173,145,83,.035) 18px 19px);
+  box-shadow: 0 8px 28px rgba(55, 43, 22, .13), inset 0 0 0 5px #fff9e9;
+  position: relative;
+}
+
+#homeView::before,
+#homeView::after {
+  position: absolute;
+  z-index: 2;
+  color: #a77e32;
+  font-family: serif;
+  font-size: 42px;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,.12);
+}
+
+#homeView::before {
+  content: "۞";
+  top: 8px;
+  left: 10px;
+}
+
+#homeView::after {
+  content: "۞";
+  right: 10px;
+  bottom: 8px;
+}
+
+.welcome-section.heritage-frame {
+  min-height: 350px;
+  margin: 0 auto 26px;
+  padding: 22px 18px 28px;
+  border: 0;
+  outline: 0;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+  justify-content: flex-start;
+}
+
+.welcome-section.heritage-frame::before,
+.welcome-section.heritage-frame::after {
+  content: none;
+}
+
+.mihrab-heading {
+  position: relative;
+  isolation: isolate;
+  width: min(490px, 94%);
+  min-height: 255px;
+  margin: 0 auto;
+  padding: 76px 24px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 5px double #b18a43;
+  border-radius: 240px 240px 12px 12px;
+  background:
+    radial-gradient(ellipse at 50% 15%, #fffdf3 0%, #f4e8c8 75%);
+  box-shadow: 0 5px 14px rgba(65, 49, 20, .15), inset 0 0 0 5px rgba(255,255,255,.7);
+}
+
+.mihrab-heading::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 9px;
+  border: 1px solid rgba(13,59,46,.55);
+  border-radius: 230px 230px 7px 7px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 12px, rgba(174,139,65,.07) 13px 14px);
+}
+
+.mihrab-heading .heritage-eyebrow {
+  margin-bottom: 2px;
+  color: #896b31;
+  font-size: 18px;
+}
+
+.mihrab-heading h2 {
+  margin: 0 0 7px;
+  color: #103c2b;
+  font-size: clamp(39px, 5vw, 56px);
+  line-height: 1.65;
+  text-shadow: 0 2px 1px rgba(173,139,65,.2);
+}
+
+.mihrab-heading p {
+  color: #443b2b;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mihrab-heading .heritage-divider {
+  margin-top: 8px;
+  color: #a47b32;
+}
+
+.heritage-corner {
+  z-index: 2;
+  color: #947039;
+  font-size: 28px;
+}
+
+.heritage-corner-top-left { top: 10px; left: 12px; }
+.heritage-corner-top-right { top: 10px; right: 12px; }
+.heritage-corner-bottom-left { bottom: 8px; left: 12px; }
+.heritage-corner-bottom-right { right: 12px; bottom: 8px; }
+
+.home-card-grid {
+  position: relative;
+  z-index: 3;
+  width: min(940px, 96%);
+  max-width: 940px;
+  margin: -4px auto 18px;
+  padding: 20px;
+  gap: 22px;
+  border: 3px double #b69a61;
+  border-radius: 22px 22px 8px 8px;
+  background: linear-gradient(145deg, #fffdf5, #f3e8cc);
+  box-shadow: 0 8px 22px rgba(68, 52, 24, .14), inset 0 0 0 5px rgba(255,255,255,.65);
+}
+
+.home-card {
+  min-height: 260px;
+  padding: 24px 18px;
+  gap: 9px;
+  overflow: hidden;
+  border: 3px double #b39a65;
+  border-radius: 18px;
+  border-bottom: 3px double #9d7938;
+  background:
+    radial-gradient(circle at 0 0, rgba(174,143,77,.12), transparent 27%),
+    radial-gradient(circle at 100% 100%, rgba(174,143,77,.12), transparent 27%),
+    linear-gradient(145deg, #fffef8, #f5ecd8);
+  box-shadow: 0 4px 12px rgba(65, 49, 20, .12), inset 0 0 0 4px rgba(255,255,255,.8);
+}
+
+.home-card::before,
+.home-card::after {
+  position: absolute;
+  color: rgba(119, 91, 43, .7);
+  font-family: serif;
+  font-size: 28px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.home-card::before {
+  content: "۞";
+  top: 7px;
+  left: 9px;
+}
+
+.home-card::after {
+  content: "۞";
+  right: 9px;
+  bottom: 7px;
+}
+
+.home-card-icon {
+  width: 120px;
+  height: 105px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #24452e;
+}
+
+.home-card-icon svg {
+  width: 112px;
+  height: 94px;
+  overflow: visible;
+  filter: drop-shadow(0 4px 3px rgba(55, 38, 15, .18));
+}
+
+.home-card strong {
+  color: #153c2b;
+  font-size: 1.35rem;
+}
+
+.home-card > span:last-child {
+  color: #5f5544;
+  font-size: 1rem;
+}
+
+.home-card:hover {
+  transform: translateY(-4px);
+  border-color: #987333;
+  background-color: #fffdf4;
+  box-shadow: 0 10px 22px rgba(65, 49, 20, .17);
+}
+
+.home-card:hover .home-card-icon {
+  background: transparent;
+}
+
+.app-footer {
+  margin-top: 0;
+  border-top: 3px double #b69a61;
+  background: #f1e6ca;
+  color: #5e5036;
+}
+
+.app-footer a {
+  color: #31563a;
+}
+
+/* Dark mode keeps the heritage details readable */
+body.dark-theme #homeView {
+  background-color: #1b2b21;
+  background-image: repeating-linear-gradient(45deg, transparent 0 17px, rgba(212,175,55,.025) 18px 19px);
+  border-color: #8f753b;
+  box-shadow: inset 0 0 0 5px rgba(212,175,55,.07);
+}
+
+body.dark-theme .mihrab-heading {
+  background: linear-gradient(145deg, #263b2c, #1b2b21);
+  border-color: #a88945;
+}
+
+body.dark-theme .mihrab-heading h2 { color: #f0d681; }
+body.dark-theme .mihrab-heading p { color: #e5dfce; }
+body.dark-theme .mihrab-heading .heritage-eyebrow { color: #e8cf83; }
+
+body.dark-theme .home-card-grid {
+  background: #202f24;
+  border-color: #92783f;
+}
+
+body.dark-theme .home-card {
+  background: linear-gradient(145deg, #263b2c, #1b2b21);
+  border-color: #92783f;
+}
+
+body.dark-theme .home-card strong { color: #f0d681; }
+body.dark-theme .home-card > span:last-child { color: #d0d7c9; }
+body.dark-theme .home-card::before,
+body.dark-theme .home-card::after { color: rgba(225,195,115,.65); }
+
+body.dark-theme .app-footer {
+  background: #19271e;
+  color: #c8cbbd;
+  border-color: #806c3d;
+}
+
+/* Small screens */
+@media (max-width: 700px) {
+  #homeView {
+    padding: 12px 9px 0;
+    border-width: 3px;
+    border-radius: 17px;
+  }
+
+  .welcome-section.heritage-frame {
+    min-height: 270px;
+    padding: 14px 4px 20px;
+    margin-bottom: 15px;
+  }
+
+  .mihrab-heading {
+    width: min(390px, 96%);
+    min-height: 220px;
+    padding: 65px 14px 20px;
+    border-width: 4px;
+  }
+
+  .mihrab-heading .heritage-eyebrow { font-size: 15px; }
+  .mihrab-heading h2 { font-size: clamp(34px, 9vw, 46px); }
+  .mihrab-heading p { font-size: 13px; }
+
+  .home-card-grid {
+    width: 97%;
+    padding: 12px;
+    gap: 13px;
+    border-radius: 15px;
+  }
+
+  .home-card {
+    min-height: 210px;
+    padding: 18px 12px;
+  }
+
+  .home-card-icon {
+    width: 105px;
+    height: 88px;
+  }
+
+  .home-card-icon svg {
+    width: 100px;
+    height: 84px;
+  }
+
+  #homeView::before,
+  #homeView::after {
+    font-size: 27px;
+  }
+}
+
+
+/* REFINED ISLAMIC GEOMETRIC DASHBOARD — 24 NOV 2026 */
+#homeView {
+  border: 7px double #a98236;
+  border-radius: 20px;
+  outline: 1px solid rgba(169,130,54,.45);
+  outline-offset: 5px;
+  background-color: #fbf6e9;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(183,147,72,.07) 1px, transparent 1.8px),
+    repeating-linear-gradient(45deg, transparent 0 22px, rgba(169,130,54,.035) 23px 24px);
+  box-shadow: 0 10px 30px rgba(48,38,19,.13), inset 0 0 0 4px #fffdf5;
+}
+#homeView::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  inset: 2px;
+  border-radius: 12px;
+  border: 1px solid rgba(169,130,54,.5);
+  background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20120%27%3E%0A%3Cg%20fill%3D%27none%27%20stroke%3D%27%23b18a43%27%20stroke-width%3D%272%27%3E%0A%3Cpath%20d%3D%27M4%2048V4h44M4%204l22%2022L4%2048M4%204l44%2044M4%2024l24%2024M24%204l24%2024%27%2F%3E%0A%3Cpath%20d%3D%27M72%204h44v44M116%204L94%2026l22%2022M116%204L72%2048M96%204L72%2028M116%2024L92%2048%27%2F%3E%0A%3Cpath%20d%3D%27M4%2072v44h44M4%20116l22-22-22-22M4%20116l44-44M4%2096l24-24M24%20116l24-24%27%2F%3E%0A%3Cpath%20d%3D%27M72%20116h44V72M116%20116L94%2094l22-22M116%20116L72%2072M96%20116L72%2092M116%2096L92%2072%27%2F%3E%0A%3Cpath%20d%3D%27m4%204%2010%2010-10%2010-10-10Z%20M116%204l10%2010-10%2010-10-10Z%20M4%20116l10-10%2010%2010-10%2010Z%20M116%20116l10-10-10-10-10%2010Z%27%20transform%3D%27translate%280%200%29%27%2F%3E%0A%3Ccircle%20cx%3D%274%27%20cy%3D%274%27%20r%3D%273%27%20fill%3D%27%23b18a43%27%2F%3E%3Ccircle%20cx%3D%27116%27%20cy%3D%274%27%20r%3D%273%27%20fill%3D%27%23b18a43%27%2F%3E%0A%3Ccircle%20cx%3D%274%27%20cy%3D%27116%27%20r%3D%273%27%20fill%3D%27%23b18a43%27%2F%3E%3Ccircle%20cx%3D%27116%27%20cy%3D%27116%27%20r%3D%273%27%20fill%3D%27%23b18a43%27%2F%3E%0A%3C%2Fg%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: top left, top right, bottom left, bottom right;
+  background-size: 62px 62px;
+  pointer-events: none;
+}
+#homeView::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 13px;
+  border: 1px solid rgba(169,130,54,.22);
+  border-radius: 9px;
+  pointer-events: none;
+}
+.welcome-section.heritage-frame {
+  position: relative;
+  z-index: 2;
+  min-height: 355px;
+  padding-top: 28px;
+}
+.mihrab-heading {
+  width: min(520px, 94%);
+  min-height: 275px;
+  border: 6px double #b18a43;
+  background:
+    radial-gradient(ellipse at 50% 10%, #fffef7 0%, #f5e9ca 78%);
+  box-shadow: 0 8px 20px rgba(65,49,20,.17), inset 0 0 0 5px rgba(255,255,255,.72);
+}
+.mihrab-heading::before {
+  inset: 10px;
+  border: 2px solid rgba(13,59,46,.42);
+  background:
+    repeating-linear-gradient(45deg, transparent 0 13px, rgba(174,139,65,.09) 14px 15px),
+    repeating-linear-gradient(-45deg, transparent 0 13px, rgba(174,139,65,.06) 14px 15px);
+}
+.mihrab-heading h2 {
+  color: #103c2b;
+  text-shadow: 0 2px 0 #ead8a9, 0 3px 8px rgba(73,53,20,.15);
+}
+.home-card-grid {
+  position: relative;
+  z-index: 3;
+  border: 5px double #ad8a4c;
+  border-radius: 18px;
+  background:
+    repeating-linear-gradient(45deg, rgba(174,139,65,.045) 0 2px, transparent 2px 15px),
+    linear-gradient(145deg, #fffdf5, #f2e7ca);
+  box-shadow: 0 8px 24px rgba(65,49,20,.14), inset 0 0 0 5px rgba(255,255,255,.7);
+}
+.home-card {
+  min-height: 275px;
+  border: 4px double #a9894e;
+  border-radius: 12px;
+  outline: 1px solid rgba(169,137,78,.35);
+  outline-offset: -8px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(207,177,111,.16), transparent 55%),
+    linear-gradient(145deg, #fffef9, #f3e8ce);
+}
+.home-card::before,
+.home-card::after {
+  content: "✥";
+  color: #a27a35;
+  font-size: 25px;
+  text-shadow: 0 1px #fff5d9;
+}
+.home-card-icon {
+  width: 150px;
+  height: 122px;
+  margin-bottom: 3px;
+}
+.home-card-icon svg {
+  width: 145px;
+  height: 120px;
+  filter: drop-shadow(0 5px 4px rgba(55,38,15,.2));
+  transition: transform .25s ease, filter .25s ease;
+}
+.home-card:hover .home-card-icon svg {
+  transform: translateY(-4px) scale(1.04);
+  filter: drop-shadow(0 8px 5px rgba(55,38,15,.25));
+}
+.home-card strong {
+  color: #123d2c;
+  letter-spacing: .1px;
+}
+.home-card > span:last-child {
+  color: #61543c;
+}
+body.dark-theme #homeView {
+  border-color: #92783f;
+  outline-color: rgba(212,175,55,.35);
+  background-color: #1b2b21;
+}
+body.dark-theme #homeView::before {
+  border-color: rgba(212,175,55,.35);
+  opacity: .8;
+}
+body.dark-theme #homeView::after {
+  border-color: rgba(212,175,55,.2);
+}
+body.dark-theme .mihrab-heading {
+  background: linear-gradient(145deg, #263b2c, #1b2b21);
+}
+body.dark-theme .home-card-grid {
+  background: linear-gradient(145deg, #263b2c, #1b2b21);
+}
+body.dark-theme .home-card {
+  background: linear-gradient(145deg, #263b2c, #1b2b21);
+}
+body.dark-theme .home-card::before,
+body.dark-theme .home-card::after {
+  color: #d9bd72;
+}
+@media (max-width: 700px) {
+  #homeView {
+    border-width: 4px;
+    border-radius: 14px;
+  }
+  #homeView::before {
+    background-size: 42px 42px;
+  }
+  #homeView::after {
+    inset: 9px;
+  }
+  .welcome-section.heritage-frame {
+    min-height: 265px;
+  }
+  .mihrab-heading {
+    min-height: 225px;
+  }
+  .home-card {
+    min-height: 225px;
+  }
+  .home-card-icon {
+    width: 130px;
+    height: 105px;
+  }
+  .home-card-icon svg {
+    width: 125px;
+    height: 103px;
+  }
+}
+
+
+/* FINAL ISLAMIC HERITAGE DASHBOARD POLISH */
+#homeView {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 16px;
+  border: 6px double #a98236;
+  border-radius: 18px;
+  background-color: #fbf6e9;
+  background-image:
+    radial-gradient(circle, rgba(177,138,67,.08) 1px, transparent 2px),
+    repeating-linear-gradient(45deg, transparent 0 19px, rgba(169,130,54,.025) 20px 21px);
+  box-shadow: 0 12px 32px rgba(48,38,19,.12), inset 0 0 0 4px #fffdf5;
+}
+
+#homeView::before {
+  z-index: 6;
+  inset: 3px;
+  border: 1px solid rgba(169,130,54,.48);
+  border-radius: 11px;
+  background-image:
+    repeating-conic-gradient(from 22.5deg, transparent 0 39deg, rgba(169,130,54,.65) 40deg 42deg, transparent 43deg 90deg),
+    repeating-conic-gradient(from 22.5deg, transparent 0 39deg, rgba(169,130,54,.65) 40deg 42deg, transparent 43deg 90deg),
+    repeating-conic-gradient(from 22.5deg, transparent 0 39deg, rgba(169,130,54,.65) 40deg 42deg, transparent 43deg 90deg),
+    repeating-conic-gradient(from 22.5deg, transparent 0 39deg, rgba(169,130,54,.65) 40deg 42deg, transparent 43deg 90deg);
+  background-repeat: no-repeat;
+  background-position: left top, right top, left bottom, right bottom;
+  background-size: 54px 54px;
+  pointer-events: none;
+}
+
+#homeView::after {
+  z-index: 0;
+  inset: 12px;
+  border: 1px solid rgba(169,130,54,.2);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.welcome-section.heritage-frame {
+  z-index: 2;
+  min-height: 365px;
+  margin: 0 0 24px;
+  padding: 28px 16px 30px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.mihrab-heading {
+  width: min(535px, 94%);
+  min-height: 292px;
+  padding: 82px 28px 28px;
+  border: 6px double #b18a43;
+  border-radius: 270px 270px 14px 14px;
+  background: radial-gradient(ellipse at 50% 12%, #fffef8, #f5e9ca 78%);
+  box-shadow: 0 9px 24px rgba(65,49,20,.15), inset 0 0 0 5px rgba(255,255,255,.78);
+}
+
+.mihrab-heading::before {
+  inset: 11px;
+  border: 1px solid rgba(13,59,46,.4);
+  border-radius: 255px 255px 8px 8px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 12px, rgba(174,139,65,.075) 13px 14px),
+    repeating-linear-gradient(-45deg, transparent 0 12px, rgba(13,59,46,.035) 13px 14px);
+}
+
+.mihrab-heading .heritage-eyebrow {
+  color: #8b6b2e;
+  font-size: 20px;
+}
+
+.mihrab-heading h2 {
+  color: #103c2b;
+  font-size: clamp(42px, 5.2vw, 60px);
+  text-shadow: 0 2px 0 #f3e3bd, 0 4px 10px rgba(73,53,20,.14);
+}
+
+.mihrab-heading p {
+  color: #51452f;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mihrab-heading .heritage-divider {
+  color: #a47b32;
+  letter-spacing: 3px;
+}
+
+.heritage-corner {
+  color: #a27a35;
+  font-size: 32px;
+  text-shadow: 0 1px 0 #fff8e8;
+}
+
+.home-card-grid {
+  z-index: 3;
+  width: min(940px, 96%);
+  max-width: 940px;
+  margin: 0 auto 18px;
+  padding: 22px;
+  gap: 24px;
+  border: 5px double #ad8a4c;
+  border-radius: 15px;
+  background:
+    repeating-linear-gradient(45deg, rgba(174,139,65,.035) 0 1px, transparent 1px 13px),
+    linear-gradient(145deg, #fffdf6, #f2e7ca);
+  box-shadow: 0 8px 24px rgba(65,49,20,.13), inset 0 0 0 4px rgba(255,255,255,.72);
+}
+
+.home-card {
+  min-height: 280px;
+  padding: 24px 20px;
+  gap: 12px;
+  border: 4px double #a9894e;
+  border-radius: 13px;
+  outline: 1px solid rgba(169,137,78,.28);
+  outline-offset: -9px;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(207,177,111,.2), transparent 56%),
+    linear-gradient(145deg, #fffef9, #f3e8ce);
+  box-shadow: 0 5px 15px rgba(65,49,20,.1), inset 0 0 0 4px rgba(255,255,255,.72);
+}
+
+.home-card::before,
+.home-card::after {
+  color: #a27a35;
+  font-size: 24px;
+}
+
+.home-card-icon {
+  width: 154px;
+  height: 130px;
+  margin-bottom: 4px;
+  border: 2px solid #c4a45e;
+  border-radius: 48% 48% 44% 44%;
+  background: radial-gradient(ellipse at center, #fffdf4 0 48%, #f0e2bd 72%, #e4d09d 100%);
+  box-shadow: 0 3px 10px rgba(93,69,28,.12), inset 0 0 0 4px rgba(255,255,255,.75);
+}
+
+.home-card-icon svg {
+  width: 145px;
+  height: 120px;
+  filter: drop-shadow(0 5px 4px rgba(55,38,15,.2));
+}
+
+.home-card strong {
+  color: #123d2c;
+  font-size: 1.38rem;
+}
+
+.home-card > span:last-child {
+  color: #61543c;
+  line-height: 1.75;
+}
+
+.home-card:hover {
+  transform: translateY(-5px);
+  border-color: #987333;
+  box-shadow: 0 12px 25px rgba(65,49,20,.17);
+}
+
+body.dark-theme #homeView {
+  background-color: #1b2b21;
+  border-color: #92783f;
+}
+
+body.dark-theme #homeView::before {
+  border-color: rgba(212,175,55,.32);
+}
+
+body.dark-theme .mihrab-heading {
+  border-color: #a88945;
+  background: radial-gradient(ellipse at 50% 12%, #304635, #1b2b21 76%);
+}
+
+body.dark-theme .mihrab-heading h2 { color: #f0d681; }
+body.dark-theme .mihrab-heading p { color: #e5dfce; }
+body.dark-theme .mihrab-heading .heritage-eyebrow { color: #e8cf83; }
+body.dark-theme .home-card-grid { background: #202f24; border-color: #92783f; }
+
+body.dark-theme .home-card {
+  border-color: #92783f;
+  background: linear-gradient(145deg, #2b4030, #1b2b21);
+}
+
+body.dark-theme .home-card-icon {
+  border-color: #a88945;
+  background: radial-gradient(ellipse at center, #354936, #25382a);
+}
+
+body.dark-theme .home-card strong { color: #f0d681; }
+body.dark-theme .home-card > span:last-child { color: #d0d7c9; }
+
+@media (max-width: 700px) {
+  #homeView { padding: 10px 8px; border-width: 4px; }
+  #homeView::before { background-size: 38px 38px; }
+  #homeView::after { inset: 8px; }
+  .welcome-section.heritage-frame {
+    min-height: 275px;
+    padding: 15px 4px 20px;
+    margin-bottom: 14px;
+  }
+  .mihrab-heading {
+    width: min(390px, 96%);
+    min-height: 230px;
+    padding: 66px 14px 20px;
+    border-width: 4px;
+  }
+  .mihrab-heading .heritage-eyebrow { font-size: 15px; }
+  .mihrab-heading h2 { font-size: clamp(35px, 9vw, 47px); }
+  .mihrab-heading p { font-size: 13px; }
+  .home-card-grid { width: 97%; padding: 12px; gap: 13px; }
+  .home-card { min-height: 225px; padding: 17px 11px; gap: 8px; }
+  .home-card-icon { width: 124px; height: 104px; }
+  .home-card-icon svg { width: 116px; height: 98px; }
+  .home-card strong { font-size: 1.12rem; }
+  .home-card > span:last-child { font-size: .88rem; }
+}
+
+
+
+/* PURE BLACK & WHITE DARK MODE — 24 NOV 2026 */
+body.dark-theme {
+  color-scheme: dark;
+  --primary: #080808;
+  --primary-light: #181818;
+  --background: #080808;
+  --surface: #171717;
+  --text: #f2f2f2;
+  --muted: #b8b8b8;
+  --border: #505050;
+  --gold: #ffffff;
+  background: #080808 !important;
+  color: #f2f2f2 !important;
+}
+
+body.dark-theme,
+body.dark-theme #app,
+body.dark-theme #mainContent,
+body.dark-theme #homeView {
+  background-color: #080808 !important;
+  color: #f2f2f2 !important;
+}
+
+body.dark-theme * {
+  border-color: #505050 !important;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+body.dark-theme *:not(svg):not(path):not(line):not(circle):not(rect):not(polygon):not(polyline):not(ellipse) {
+  color: #e8e8e8 !important;
+}
+
+body.dark-theme .app-header,
+body.dark-theme .app-footer,
+body.dark-theme .welcome-section,
+body.dark-theme .mihrab-heading,
+body.dark-theme .home-card-grid,
+body.dark-theme .home-card,
+body.dark-theme .topic-card,
+body.dark-theme .topic-admin-panel,
+body.dark-theme .topic-category-card,
+body.dark-theme .topic-browser-card,
+body.dark-theme .topic-detail-card,
+body.dark-theme .topic-ayah-card,
+body.dark-theme .admin-login-panel,
+body.dark-theme .surah-card,
+body.dark-theme .surah-header,
+body.dark-theme .ayah-card,
+body.dark-theme .reader-toolbar,
+body.dark-theme .section-heading,
+body.dark-theme .surah-index-table,
+body.dark-theme .topic-ayah-row {
+  background: #171717 !important;
+  color: #eeeeee !important;
+}
+
+body.dark-theme button,
+body.dark-theme .header-button,
+body.dark-theme #themeToggle,
+body.dark-theme .secondary-button,
+body.dark-theme .count-badge,
+body.dark-theme .topic-category-open-button,
+body.dark-theme .home-card {
+  background: #242424 !important;
+  color: #ffffff !important;
+  border-color: #777777 !important;
+}
+
+body.dark-theme button:hover,
+body.dark-theme .home-card:hover,
+body.dark-theme .secondary-button:hover:not(:disabled) {
+  background: #383838 !important;
+  color: #ffffff !important;
+  border-color: #bdbdbd !important;
+}
+
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select,
+body.dark-theme .surah-search,
+body.dark-theme .topic-form-row input,
+body.dark-theme .topic-form-row select,
+body.dark-theme .topic-form-grid select,
+body.dark-theme .admin-login-panel input,
+body.dark-theme .ayah-edit-input {
+  background: #101010 !important;
+  color: #f5f5f5 !important;
+  border-color: #666666 !important;
+}
+
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+  color: #999999 !important;
+}
+
+body.dark-theme table,
+body.dark-theme th,
+body.dark-theme td,
+body.dark-theme .surah-index-table th,
+body.dark-theme .surah-table-link {
+  background-color: #171717 !important;
+  color: #eeeeee !important;
+  border-color: #555555 !important;
+}
+
+body.dark-theme a,
+body.dark-theme .topic-ayah-link,
+body.dark-theme .app-footer a {
+  color: #ffffff !important;
+  text-decoration-color: #aaaaaa !important;
+}
+
+body.dark-theme .home-card-icon {
+  background: #202020 !important;
+  border-color: #777777 !important;
+  filter: grayscale(1);
+}
+
+body.dark-theme .home-card-icon svg,
+body.dark-theme .home-card-icon svg * {
+  filter: grayscale(1);
+}
+
+body.dark-theme #homeView::before,
+body.dark-theme #homeView::after,
+body.dark-theme .heritage-corner,
+body.dark-theme .heritage-divider,
+body.dark-theme .home-card::before,
+body.dark-theme .home-card::after {
+  color: #bdbdbd !important;
+  border-color: #666666 !important;
+  filter: grayscale(1);
+}
+
+body.dark-theme .mihrab-heading h2,
+body.dark-theme .mihrab-heading p,
+body.dark-theme .mihrab-heading .heritage-eyebrow,
+body.dark-theme .home-card strong,
+body.dark-theme .home-card > span:last-child,
+body.dark-theme .welcome-section h2,
+body.dark-theme .welcome-section p,
+body.dark-theme #quranSection h2,
+body.dark-theme .surah-header h2,
+body.dark-theme .translation-label,
+body.dark-theme .footnote-details summary,
+body.dark-theme .ayah-arabic,
+body.dark-theme .ayah-translation,
+body.dark-theme .topic-ayah-arabic,
+body.dark-theme .topic-ayah-translation {
+  color: #eeeeee !important;
+}
+
+body.dark-theme .ayah-number,
+body.dark-theme .surah-number,
+body.dark-theme .count-badge {
+  background: #303030 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .topic-category-icon {
+  background: #292929 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .error-message,
+body.dark-theme .success-message,
+body.dark-theme .warning-message {
+  color: #dddddd !important;
+}
+
+body.dark-theme svg {
+  filter: grayscale(1);
+}
+
+body.dark-theme button:focus-visible,
+body.dark-theme input:focus-visible,
+body.dark-theme textarea:focus-visible,
+body.dark-theme select:focus-visible {
+  outline: 2px solid #ffffff !important;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.dark-theme *,
+  body.dark-theme *::before,
+  body.dark-theme *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+
+/* FINAL MONOCHROME TEXT AND AYAH FIX */
+body.dark-theme #surahReader .ayah-number,
+body.dark-theme #surahReader .surah-number,
+body.dark-theme #surahReader .count-badge,
+body.dark-theme .ayah-number,
+body.dark-theme .surah-number,
+body.dark-theme .count-badge,
+body.dark-theme .translation-label,
+body.dark-theme #surahReader .translation-label,
+body.dark-theme .ayah-translation,
+body.dark-theme #surahReader .ayah-translation,
+body.dark-theme .topic-ayah-translation,
+body.dark-theme .topic-ayah-translation-label,
+body.dark-theme .topic-ayah-arabic,
+body.dark-theme .ayah-arabic,
+body.dark-theme .footnote-details summary,
+body.dark-theme #surahReader .footnote-details summary,
+body.dark-theme .footnote-content,
+body.dark-theme .section-heading h2,
+body.dark-theme .surah-header h2,
+body.dark-theme .welcome-section h2,
+body.dark-theme #quranSection h2 {
+  color: #eeeeee !important;
+}
+
+body.dark-theme .ayah-number,
+body.dark-theme .surah-number,
+body.dark-theme .count-badge,
+body.dark-theme #surahReader .ayah-number,
+body.dark-theme #surahReader .surah-number,
+body.dark-theme #surahReader .count-badge {
+  background: #303030 !important;
+  border-color: #777777 !important;
+}
+
+body.dark-theme .ayah-translation .footnote-reference,
+body.dark-theme .footnote-content .footnote-reference {
+  color: #bdbdbd !important;
+}
+
+body.dark-theme .topic-ayah-highlight,
+body.dark-theme .ayah-arabic.sajdah-ayah-highlight {
+  background: #292929 !important;
+  outline-color: #888888 !important;
+}
+
+body.dark-theme .topic-ayah-translation-label {
+  color: #cccccc !important;
+}
+
+
+
+/* Dashboard card action labels */
+.home-card .home-card-action {
+  display: inline-block;
+  margin-top: 7px;
+  padding: 7px 19px;
+  border: 1px solid #52745d;
+  border-radius: 22px;
+  background: #e8efe8;
+  color: #17452f !important;
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.1px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.home-card:hover .home-card-action {
+  background: #dce8dc;
+  transform: translateY(-1px);
+}
+
+body.dark-theme .home-card .home-card-action {
+  background: #303030 !important;
+  border-color: #888888 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .home-card:hover .home-card-action {
+  background: #454545 !important;
+}
+
+
+/* Asmaul Husna — Dashboard feature */
+.asmaul-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: 1px solid #c9a65a;
+  border-radius: 50%;
+  color: #98752f;
+  font-family: serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  background: #fbf6e9;
+}
+
+.asmaul-husna-section {
+  width: 100%;
+}
+
+.asmaul-heading {
+  margin: 8px 0 22px;
+  text-align: center;
+}
+
+.asmaul-heading h2 {
+  margin-bottom: 8px;
+}
+
+.asmaul-heading p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.asmaul-search-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.asmaul-search {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  margin-bottom: 16px;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.asmaul-message {
+  min-height: 26px;
+  margin: 10px 0 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.asmaul-husna-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.asmaul-name-card {
+  position: relative;
+  min-width: 0;
+  padding: 20px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+}
+
+.asmaul-name-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  margin-bottom: 10px;
+  padding: 0 8px;
+  border-radius: 20px;
+  background: #f2ead7;
+  color: #735722;
+  font-weight: 700;
+}
+
+.asmaul-name-arabic {
+  margin: 4px 0 10px;
+  color: var(--primary);
+  font-family: serif;
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  line-height: 1.8;
+}
+
+.asmaul-name-english {
+  margin: 0 0 5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.asmaul-name-pronunciation {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+.asmaul-name-meaning {
+  margin: 0;
+  line-height: 1.8;
+}
+
+body.dark-theme .asmaul-card-icon {
+  background: #111;
+  border-color: #aaa;
+  color: #fff;
+}
+
+body.dark-theme .asmaul-name-card {
+  background: #111;
+  border-color: #555;
+  color: #fff;
+}
+
+body.dark-theme .asmaul-name-arabic,
+body.dark-theme .asmaul-name-english {
+  color: #fff;
+}
+
+body.dark-theme .asmaul-name-number {
+  background: #292929;
+  color: #fff;
+}
+
+body.dark-theme .asmaul-search {
+  background: #111;
+  border-color: #555;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .asmaul-husna-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .asmaul-name-card {
+    padding: 14px 8px;
+  }
+}
+
+
+/* ASMAUL HUSNA SEARCH AND CENTERED THIRD CARD FIX */
+
+/* Dashboard: compact cards, third card centered */
+.home-card-grid {
+  max-width: 760px;
+  column-gap: 16px;
+  row-gap: 14px;
+}
+
+.home-card {
+  min-height: 165px;
+  padding: 18px 16px;
+  gap: 8px;
+}
+
+.home-card-icon {
+  font-size: 2rem;
+}
+
+.home-card-icon svg {
+  width: 125px;
+  height: 105px;
+}
+
+.home-card-grid > .home-card:nth-child(3) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - 16px) / 2);
+}
+
+/* Keep Asmaul Husna search clearly visible */
+.asmaul-husna-section .asmaul-search-label {
+  display: block;
+  visibility: visible;
+  margin-top: 18px;
+}
+
+.asmaul-husna-section .asmaul-search {
+  display: block;
+  visibility: visible;
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
+.asmaul-husna-section .asmaul-message {
+  display: block;
+  visibility: visible;
+}
+
+@media (max-width: 700px) {
+  .home-card-grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+
+  .home-card-grid > .home-card:nth-child(3) {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  .home-card {
+    min-height: 145px;
+    padding: 16px;
+  }
+
+  .home-card-icon svg {
+    width: 110px;
+    height: 90px;
+  }
+}
+
+
+/* COMPACT HOMEPAGE AND ASMAUL HUSNA CARDS */
+
+/* Homepage layout */
+.home-card-grid {
+  max-width: 700px;
+  padding: 14px;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.home-card {
+  min-height: 145px;
+  padding: 14px 12px;
+  gap: 7px;
+}
+
+.home-card-icon {
+  width: 100px;
+  height: 85px;
+  margin-bottom: 0;
+}
+
+.home-card-icon svg {
+  width: 100px;
+  height: 82px;
+}
+
+.home-card strong {
+  font-size: 1.15rem;
+}
+
+.home-card > span:last-child {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+/* Homepage action buttons */
+.home-card .home-card-action {
+  margin-top: 4px;
+  padding: 5px 14px;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+/* Asmaul Husna cards */
+.asmaul-name-card {
+  min-height: 0;
+  padding: 14px 12px;
+}
+
+.asmaul-name-number {
+  min-width: 27px;
+  height: 27px;
+  margin-bottom: 6px;
+}
+
+.asmaul-name-arabic {
+  margin: 2px 0 6px;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  line-height: 1.55;
+}
+
+.asmaul-name-english {
+  margin-bottom: 3px;
+  font-size: 0.9rem;
+}
+
+.asmaul-name-pronunciation {
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.asmaul-name-meaning {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+/* Smaller screens */
+@media (max-width: 700px) {
+  .home-card-grid {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .home-card {
+    min-height: 132px;
+    padding: 12px 8px;
+    gap: 6px;
+  }
+
+  .home-card-icon {
+    width: 90px;
+    height: 76px;
+  }
+
+  .home-card-icon svg {
+    width: 88px;
+    height: 74px;
+  }
+
+  .home-card strong {
+    font-size: 1.05rem;
+  }
+
+  .home-card .home-card-action {
+    padding: 4px 11px;
+    font-size: 0.85rem;
+  }
+
+  .asmaul-name-card {
+    padding: 12px 7px;
+  }
+
+  .asmaul-name-number {
+    min-width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    padding: 0 5px;
+    font-size: 0.85rem;
+  }
+
+  .asmaul-name-arabic {
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+    line-height: 1.5;
+    margin: 2px 0 5px;
+  }
+
+  .asmaul-name-english,
+  .asmaul-name-pronunciation,
+  .asmaul-name-meaning {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+}
+
+
+/* COMPACT MIHRAB HEADING TEXT */
+.mihrab-heading .heritage-eyebrow {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 1px;
+}
+
+.mihrab-heading h2 {
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.4;
+  margin-bottom: 5px;
+}
+
+.mihrab-heading p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mihrab-heading .heritage-divider {
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .mihrab-heading .heritage-eyebrow {
+    font-size: 12px;
+  }
+
+  .mihrab-heading h2 {
+    font-size: clamp(27px, 7vw, 35px);
+  }
+
+  .mihrab-heading p {
+    font-size: 11px;
+  }
+
+  .mihrab-heading .heritage-divider {
+    font-size: 9px;
+  }
+}
+
+
+/* EXTRA COMPACT THREE HOMEPAGE CARDS */
+.home-card-grid {
+  width: min(620px, 94%);
+  max-width: 620px;
+  padding: 10px;
+  gap: 10px;
+}
+
+.home-card {
+  min-height: 112px;
+  padding: 10px 9px;
+  gap: 4px;
+}
+
+.home-card-icon {
+  width: 76px;
+  height: 62px;
+}
+
+.home-card-icon svg {
+  width: 76px;
+  height: 62px;
+}
+
+.home-card strong {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.home-card > span:last-child {
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.home-card .home-card-action {
+  margin-top: 2px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 700px) {
+  .home-card-grid {
+    width: 96%;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .home-card {
+    min-height: 105px;
+    padding: 8px 6px;
+    gap: 3px;
+  }
+
+  .home-card-icon {
+    width: 68px;
+    height: 55px;
+  }
+
+  .home-card-icon svg {
+    width: 68px;
+    height: 55px;
+  }
+
+  .home-card strong {
+    font-size: 0.92rem;
+  }
+
+  .home-card > span:last-child {
+    font-size: 0.76rem;
+  }
+
+  .home-card .home-card-action {
+    padding: 3px 9px;
+    font-size: 0.76rem;
+  }
+}
+
+
+/* WIDER AND SHORTER HOMEPAGE CARDS WITH TIGHTER SPACING */
+.home-card-grid {
+  width: min(760px, 98%);
+  max-width: 760px;
+  padding: 6px;
+  column-gap: 12px;
+  row-gap: 4px;
+  margin-bottom: 4px;
+}
+
+.home-card {
+  min-height: 92px;
+  padding: 7px 12px;
+  gap: 2px;
+}
+
+.home-card-grid > .home-card:nth-child(3) {
+  width: calc((100% - 12px) / 2);
+}
+
+.home-card-icon,
+.home-card-icon svg {
+  width: 64px;
+  height: 50px;
+}
+
+.home-card strong {
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.home-card > span:last-child {
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.home-card .home-card-action {
+  margin-top: 1px;
+  padding: 2px 9px;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 700px) {
+  .home-card-grid {
+    width: 100%;
+    max-width: none;
+    padding: 4px;
+    row-gap: 3px;
+  }
+
+  .home-card {
+    min-height: 84px;
+    padding: 6px 8px;
+    gap: 2px;
+  }
+
+  .home-card-grid > .home-card:nth-child(3) {
+    width: 100%;
+  }
+
+  .home-card-icon,
+  .home-card-icon svg {
+    width: 58px;
+    height: 44px;
+  }
+
+  .home-card strong {
+    font-size: 0.9rem;
+  }
+
+  .home-card > span:last-child {
+    font-size: 0.74rem;
+    line-height: 1.25;
+  }
+
+  .home-card .home-card-action {
+    padding: 2px 8px;
+    font-size: 0.74rem;
+  }
+}
+
+
+/* WIDER AND SHORTER MIHRAB WELCOME CARD */
+.welcome-section.heritage-frame {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 8px 4px 0;
+  margin: 0 auto 2px;
+  justify-content: center;
+}
+
+.welcome-section.heritage-frame .mihrab-heading {
+  width: min(700px, 98%);
+  min-height: 205px;
+  box-sizing: border-box;
+  padding: 48px 24px 16px;
+  margin: 0 auto;
+}
+
+.welcome-section.heritage-frame + .home-card-grid {
+  margin-top: 0;
+}
+
+@media (max-width: 700px) {
+  .welcome-section.heritage-frame {
+    min-height: 0;
+    padding: 4px 0 0;
+    margin-bottom: 0;
+  }
+
+  .welcome-section.heritage-frame .mihrab-heading {
+    width: 100%;
+    min-height: 175px;
+    padding: 38px 12px 12px;
+  }
+
+  .welcome-section.heritage-frame + .home-card-grid {
+    margin-top: 0;
+  }
+}
+
+
+/* RESTORE PREVIOUS THREE HOMEPAGE BUTTON CARDS */
+.home-card-grid {
+  width: auto;
+  max-width: 700px;
+  padding: 14px;
+  gap: 14px;
+  margin: 0 auto 12px;
+}
+
+.home-card {
+  min-height: 145px;
+  padding: 14px 12px;
+  gap: 7px;
+}
+
+.home-card-icon {
+  width: 100px;
+  height: 85px;
+  margin-bottom: 0;
+}
+
+.home-card-icon svg {
+  width: 100px;
+  height: 82px;
+}
+
+.home-card strong {
+  font-size: 1.15rem;
+}
+
+.home-card > span:last-child {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.home-card .home-card-action {
+  margin-top: 4px;
+  padding: 5px 14px;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.home-card-grid > .home-card:nth-child(3) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - 16px) / 2);
+}
+
+@media (max-width: 700px) {
+  .home-card-grid {
+    width: auto;
+    max-width: 460px;
+    padding: 12px;
+    gap: 10px;
+    grid-template-columns: 1fr;
+  }
+
+  .home-card {
+    min-height: 132px;
+    padding: 12px 8px;
+    gap: 6px;
+  }
+
+  .home-card-icon {
+    width: 90px;
+    height: 76px;
+  }
+
+  .home-card-icon svg {
+    width: 88px;
+    height: 74px;
+  }
+
+  .home-card strong {
+    font-size: 1.05rem;
+  }
+
+  .home-card .home-card-action {
+    padding: 4px 11px;
+    font-size: 0.85rem;
+  }
+
+  .home-card-grid > .home-card:nth-child(3) {
+    grid-column: auto;
+    width: 100%;
+  }
+}
+
+
+/* MIHRAB FINAL SPACING AND TYPOGRAPHY TWEAK */
+.mihrab-heading .heritage-eyebrow {
+  position: relative;
+  top: -6px;
+}
+
+.mihrab-heading h2 {
+  font-size: clamp(29px, 3.7vw, 40px);
+}
+
+.welcome-section.heritage-frame + .home-card-grid {
+  margin-top: 12px;
+}
+
+@media (max-width: 700px) {
+  .mihrab-heading h2 {
+    font-size: clamp(25px, 6.5vw, 32px);
+  }
+
+  .welcome-section.heritage-frame + .home-card-grid {
+    margin-top: 10px;
+  }
+}
+
+
+/* SMALLER QURAN TITLE AND TAAWUDH LINE */
+.mihrab-heading .heritage-taawwudh {
+  display: block;
+  position: relative;
+  top: -6px;
+  margin-bottom: 2px;
+  color: #896b31;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.mihrab-heading h2 {
+  font-size: clamp(24px, 3.2vw, 34px);
+}
+
+@media (max-width: 700px) {
+  .mihrab-heading .heritage-taawwudh {
+    font-size: 10px;
+  }
+
+  .mihrab-heading h2 {
+    font-size: clamp(21px, 5.8vw, 28px);
+  }
+}
+
+
+/* MOVE BOTH ARABIC OPENING LINES UPWARD */
+.welcome-section.heritage-frame .mihrab-heading {
+  padding-top: 30px;
+}
+
+.mihrab-heading .heritage-taawwudh {
+  top: -6px;
+}
+
+.mihrab-heading .heritage-eyebrow {
+  top: -6px;
+}
+
+@media (max-width: 700px) {
+  .welcome-section.heritage-frame .mihrab-heading {
+    padding-top: 24px;
+  }
+}
+
+
+/* IMPROVE MIHRAB ARABIC LINE SPACING AND CARD HEIGHT */
+.welcome-section.heritage-frame .mihrab-heading {
+  min-height: 235px;
+}
+
+.mihrab-heading .heritage-taawwudh {
+  margin-bottom: 10px;
+}
+
+.mihrab-heading .heritage-eyebrow {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.mihrab-heading h2 {
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .welcome-section.heritage-frame .mihrab-heading {
+    min-height: 205px;
+  }
+
+  .mihrab-heading .heritage-taawwudh {
+    margin-bottom: 8px;
+  }
+
+  .mihrab-heading .heritage-eyebrow {
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+}
+
+
+/* MATCH OPENING ARABIC LINES TO QURAN TITLE */
+.mihrab-heading .heritage-taawwudh,
+.mihrab-heading .heritage-eyebrow {
+  color: #103c2b;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .mihrab-heading .heritage-taawwudh,
+  .mihrab-heading .heritage-eyebrow {
+    font-size: 12px;
+  }
+}
+
+
+/* REMOVE ROUND ICON BOXES AND SHOW ALLAH */
+.home-card-grid .home-card-icon {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.home-card-grid .asmaul-card-icon {
+  color: #103c2b !important;
+  font-family: "Noto Naskh Arabic", "Amiri", serif;
+  font-size: 42px !important;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+body.dark-theme .home-card-grid .asmaul-card-icon {
+  color: #eeeeee !important;
+}
+
+
+
+/* REMOVE DARK MODE BOX BEHIND HOMEPAGE ICONS */
+body.dark-theme .home-card-icon {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+
+/* REDUCE THREE HOMEPAGE CARD SUBTITLES BY 1PX */
+.home-card-grid > .home-card > span:nth-of-type(2) {
+  font-size: calc(1em - 1px) !important;
+}
